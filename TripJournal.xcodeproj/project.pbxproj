@@ -35,10 +35,12 @@
 		CA81F27A2C94CCC3002485FD /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2792C94CCC3002485FD /* Secrets.swift */; };
 		CA81F27C2C94D613002485FD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F27B2C94D613002485FD /* KeychainHelper.swift */; };
 		CA81F27E2C94D6A5002485FD /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F27D2C94D6A5002485FD /* CacheManager.swift */; };
-		CA81F2802C94EA94002485FD /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F27F2C94EA94002485FD /* NetworkManager.swift */; };
+		CA81F2802C94EA94002485FD /* NetworkConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F27F2C94EA94002485FD /* NetworkConstants.swift */; };
 		CA81F2842C9502F9002485FD /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2832C9502F8002485FD /* NetworkClient.swift */; };
 		CA81F2862C9507C7002485FD /* CacheServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2852C9507C7002485FD /* CacheServiceManager.swift */; };
 		CA81F2892C950C80002485FD /* JournalService+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2882C950C80002485FD /* JournalService+Live.swift */; };
+		CA81F28B2C952696002485FD /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F28A2C952696002485FD /* TokenManager.swift */; };
+		CA81F28D2C9536D3002485FD /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F28C2C9536D3002485FD /* AuthService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,10 +73,12 @@
 		CA81F2792C94CCC3002485FD /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		CA81F27B2C94D613002485FD /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		CA81F27D2C94D6A5002485FD /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
-		CA81F27F2C94EA94002485FD /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		CA81F27F2C94EA94002485FD /* NetworkConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConstants.swift; sourceTree = "<group>"; };
 		CA81F2832C9502F8002485FD /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		CA81F2852C9507C7002485FD /* CacheServiceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheServiceManager.swift; sourceTree = "<group>"; };
 		CA81F2882C950C80002485FD /* JournalService+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalService+Live.swift"; sourceTree = "<group>"; };
+		CA81F28A2C952696002485FD /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
+		CA81F28C2C9536D3002485FD /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -196,6 +200,7 @@
 			children = (
 				CA81F2752C94BF72002485FD /* NetworkMonitor.swift */,
 				CA81F27B2C94D613002485FD /* KeychainHelper.swift */,
+				CA81F28A2C952696002485FD /* TokenManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -214,7 +219,7 @@
 			children = (
 				CA81F2792C94CCC3002485FD /* Secrets.swift */,
 				CA81F2772C94C14D002485FD /* TripRouter.swift */,
-				CA81F27F2C94EA94002485FD /* NetworkManager.swift */,
+				CA81F27F2C94EA94002485FD /* NetworkConstants.swift */,
 				CA81F2832C9502F8002485FD /* NetworkClient.swift */,
 			);
 			path = Networking;
@@ -227,6 +232,7 @@
 				07BCBA8A2B5D65D200C6F687 /* JournalService+Environment.swift */,
 				07BCBA882B5D65AD00C6F687 /* JournalService+Unimplemented.swift */,
 				CA81F2882C950C80002485FD /* JournalService+Live.swift */,
+				CA81F28C2C9536D3002485FD /* AuthService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -309,6 +315,7 @@
 				0703FC742B4583B80084DD8A /* JournalService.swift in Sources */,
 				07AA89D72B5F251800405269 /* Requests.swift in Sources */,
 				075A90E32B446996009A1DCB /* App.swift in Sources */,
+				CA81F28B2C952696002485FD /* TokenManager.swift in Sources */,
 				075A90FD2B446AA9009A1DCB /* Utils.swift in Sources */,
 				075A90FF2B446AD6009A1DCB /* EventForm.swift in Sources */,
 				0703FC782B49351F0084DD8A /* LocationPicker.swift in Sources */,
@@ -326,7 +333,8 @@
 				075A90F52B446A41009A1DCB /* TripDetails.swift in Sources */,
 				CA81F27C2C94D613002485FD /* KeychainHelper.swift in Sources */,
 				075A90F32B446A18009A1DCB /* TripList.swift in Sources */,
-				CA81F2802C94EA94002485FD /* NetworkManager.swift in Sources */,
+				CA81F28D2C9536D3002485FD /* AuthService.swift in Sources */,
+				CA81F2802C94EA94002485FD /* NetworkConstants.swift in Sources */,
 				07BCBA8B2B5D65D200C6F687 /* JournalService+Environment.swift in Sources */,
 				CA81F2842C9502F9002485FD /* NetworkClient.swift in Sources */,
 				075A90F92B446A6F009A1DCB /* TripCell.swift in Sources */,

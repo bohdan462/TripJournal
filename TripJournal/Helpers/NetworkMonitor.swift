@@ -11,6 +11,8 @@ import Combine
 
 class NetworkMonitor: ObservableObject {
     
+    static let shared = NetworkMonitor()
+    
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
     
@@ -19,7 +21,7 @@ class NetworkMonitor: ObservableObject {
     
     private var previousIsConnected: Bool = true
     
-    init() {
+   private init() {
         monitor.pathUpdateHandler = { path in
             DispatchQueue.main.async {
                 let newIsConnected = path.status == .satisfied
@@ -33,6 +35,4 @@ class NetworkMonitor: ObservableObject {
         }
         monitor.start(queue: queue)
     }
-    
-    
 }

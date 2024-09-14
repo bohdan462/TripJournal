@@ -8,45 +8,76 @@
 import Foundation
 import Combine
 
-class JournalServiceLive {
-    
-    
-    
-    
-    var tokenExpired: Bool = false
-    
-    @Published private var token: Token? {
-        didSet {
-            if let token = token {
-                try? KeychainHelper.shared.saveToken(token)
-            } else {
-                try? KeychainHelper.shared.deleteToken()
-            }
-        }
+class JournalServiceLive: JournalService {
+    func register(username: String, password: String) async throws -> Token {
+        <#code#>
     }
     
+    func logIn(username: String, password: String) async throws -> Token {
+        <#code#>
+    }
+    
+    func logOut() {
+        <#code#>
+    }
+    
+    
+    private let tokenManager: TokenManager
+    private let networkClient: NetworkClient
+
+    init(tokenManager: TokenManager, networkClient: NetworkClient) {
+        self.tokenManager = tokenManager
+        self.networkClient = networkClient
+    }
+
     var isAuthenticated: AnyPublisher<Bool, Never> {
-        $token
-            .map { $0 != nil }
+        tokenManager.$state
+            .map { state in
+                if case .fetched = state { return true }
+                return false
+            }
             .eraseToAnyPublisher()
     }
-    
-    /// Shared URLSession instance
-    private let session: URLSession
-    private let cacheManager = CacheManager()
-    @Published private var networkMonitor = NetworkMonitor()
-    
-    // MARK: - Initialization
-    init(session: URLSession = .shared) {
-        let configuration = URLSessionConfiguration.default
-        configuration.timeoutIntervalForRequest = 30.0
-        configuration.timeoutIntervalForResource = 60.0
-        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
-        
-        self.session = URLSession(configuration: configuration)
+
+
+    func createTrip(with request: TripCreate) async throws -> Trip {
+    }
+
+    func getTrips() async throws -> [Trip] {
+        <#code#>
     }
     
+    func getTrip(withId tripId: Trip.ID) async throws -> Trip {
+        <#code#>
+    }
     
+    func updateTrip(withId tripId: Trip.ID, and request: TripUpdate) async throws -> Trip {
+        <#code#>
+    }
+    
+    func deleteTrip(withId tripId: Trip.ID) async throws {
+        <#code#>
+    }
+    
+    func createEvent(with request: EventCreate) async throws -> Event {
+        <#code#>
+    }
+    
+    func updateEvent(withId eventId: Event.ID, and request: EventUpdate) async throws -> Event {
+        <#code#>
+    }
+    
+    func deleteEvent(withId eventId: Event.ID) async throws {
+        <#code#>
+    }
+    
+    func createMedia(with request: MediaCreate) async throws -> Media {
+        <#code#>
+    }
+    
+    func deleteMedia(withId mediaId: Media.ID) async throws {
+        <#code#>
+    }
 }
 
 

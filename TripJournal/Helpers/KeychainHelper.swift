@@ -13,6 +13,8 @@ enum KeychainError: LocalizedError {
     case unableToSaveData
     case unableToDeleteData
     case unableToRetrieveData
+    case unableToDecodeData
+    case unableToUpdateData
     case authenticationFailed
     case interactionNotAllowed
     
@@ -28,6 +30,10 @@ enum KeychainError: LocalizedError {
             return "Authentication failed. Could not access the Keychain."
         case .interactionNotAllowed:
             return "Interaction with the Keychain is not allowed at this time."
+        case .unableToDecodeData:
+            return "Failed to decode data to Keychain."
+        case .unableToUpdateData:
+            return "Failed to update data to Keychain."
         }
     }
 }
@@ -41,17 +47,10 @@ protocol SecureStorage {
     func delete(forKey key: String) async throws
 }
 
-protocol TokenProvider {
-    func saveToken(_ token: Token) async throws
-    func getToken() async throws -> Token?
-    func deleteToken() async throws
-}
-
-import Security
-
 actor KeychainHelper: SecureStorage {
     
     static let shared = KeychainHelper()
+    
     private let serviceName = "com.TripJournal.service"
     
     private init() {}
@@ -84,11 +83,11 @@ actor KeychainHelper: SecureStorage {
                 continuation.resume(returning: ())
             } else {
                 // Something went wrong with the update
-                continuation.resume(throwing: KeychainError.unableToSaveData)
+                continuation.resume(throwing: KeychainError.unableToUpdateData)
             }
         }
     }
-
+    
     
     func get(forKey key: String) async throws -> Data? {
         let query: [String: Any] = [
@@ -128,91 +127,26 @@ actor KeychainHelper: SecureStorage {
             }
         }
     }
+}
+
+class UserDefaultsStorage: SecureStorage {
+    private let defaults = UserDefaults.standard
     
-    enum KeychainError: LocalizedError {
-        case unableToSaveData
-        case unableToRetrieveData
-        case unableToDeleteData
-        
-        var errorDescription: String? {
-            switch self {
-            case .unableToSaveData:
-                return "Failed to save data to Keychain."
-            case .unableToRetrieveData:
-                return "Failed to retrieve data from Keychain."
-            case .unableToDeleteData:
-                return "Failed to delete data from Keychain."
-            }
-        }
+    func save(data: Data, forKey key: String) async throws {
+        defaults.set(data, forKey: key)
+    }
+    
+    func get(forKey key: String) async throws -> Data? {
+        return defaults.data(forKey: key)
+    }
+    
+    func delete(forKey key: String) async throws {
+        defaults.removeObject(forKey: key)
     }
 }
 
 
-enum TokenState {
-    case idle
-    case fetching
-    case fetched(Token)
-    case expired
-    case error(Error)
-}
 
-class TokenManager: ObservableObject {
-    @Published private(set) var state: TokenState = .idle
-    private let storage: SecureStorage
-    
-    init(storage: SecureStorage) {
-        self.storage = storage
-    }
-    
-    // Fetch the token from storage
-    func fetchToken() async {
-        state = .fetching
-        
-        do {
-            // Fetch the token from storage (KeychainHelper or other SecureStorage)
-            if let data = try await storage.get(forKey: "authToken") {
-                let token = try JSONDecoder().decode(Token.self, from: data)
-                
-                // Check if the token is expired
-                if let expirationDate = token.expirationDate, expirationDate < Date() {
-                    state = .expired
-                    try await storage.delete(forKey: "authToken")
-                } else {
-                    state = .fetched(token)  // Valid token fetched
-                }
-            } else {
-                state = .idle  // No token found
-            }
-        } catch {
-            state = .error(error)  // Error during token fetch
-        }
-    }
-    
-    // Save a new token
-    func saveToken(_ token: Token) async {
-        state = .fetching
-        
-        do {
-            let tokenData = try JSONEncoder().encode(token)
-            try await storage.save(data: tokenData, forKey: "authToken")
-            state = .fetched(token)  // Update state to reflect the saved token
-        } catch {
-            state = .error(error)  // Error while saving the token
-        }
-    }
-    
-    // Delete the token
-    func deleteToken() async {
-        state = .fetching
-        
-        do {
-            try await storage.delete(forKey: "authToken")
-            state = .idle  // Token deleted, back to idle
-        } catch {
-            state = .error(error)  // Error during token deletion
-        }
-    }
-}
 
 
 
