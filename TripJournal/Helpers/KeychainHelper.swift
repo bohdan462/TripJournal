@@ -9,6 +9,17 @@ import Foundation
 import Security
 import Combine
 
+/**
+ KeychainError defines possible errors that can occur when interacting with the Keychain, such as failures in saving, deleting, retrieving, or updating data.
+ 
+ - unableToSaveData: Indicates failure to save data to the Keychain.
+ - unableToDeleteData: Indicates failure to delete data from the Keychain.
+ - unableToRetrieveData: Indicates failure to retrieve data from the Keychain.
+ - unableToDecodeData: Indicates failure to decode data retrieved from the Keychain.
+ - unableToUpdateData: Indicates failure to update existing data in the Keychain.
+ - authenticationFailed: Indicates failure in accessing the Keychain due to authentication issues.
+ - interactionNotAllowed: Indicates failure to access the Keychain due to current system restrictions or user policies.
+ */
 enum KeychainError: LocalizedError {
     case unableToSaveData
     case unableToDeleteData
@@ -38,23 +49,47 @@ enum KeychainError: LocalizedError {
     }
 }
 
-// MARK: - TokenProvider
-///handles token management
-///allows to swap out keychain storage with another form of storage (e.g., UserDefaults or a custom secure storage) without changing business logic.
+/**
+ SecureStorage is a protocol that defines methods for saving, retrieving, and deleting data securely. It allows for the abstraction of the actual storage mechanism (e.g., Keychain, UserDefaults).
+ 
+ Methods:
+ - `save(data:forKey:)`: Saves the provided data securely.
+ - `get(forKey:)`: Retrieves data securely using the provided key.
+ - `delete(forKey:)`: Deletes data securely for the provided key.
+ */
 protocol SecureStorage {
     func save(data: Data, forKey key: String) async throws
     func get(forKey key: String) async throws -> Data?
     func delete(forKey key: String) async throws
 }
 
+/**
+ KeychainHelper is an actor that implements the SecureStorage protocol for securely saving, retrieving, and deleting data in the iOS/macOS Keychain. It uses the Keychain Services API to perform operations asynchronously.
+ 
+ - Singleton Instance: `KeychainHelper.shared` is the shared instance of this class.
+ 
+ Methods:
+ - `save(data:forKey:)`: Saves the provided data to the Keychain with a specified key.
+ - `get(forKey:)`: Retrieves data from the Keychain using the provided key.
+ - `delete(forKey:)`: Deletes data from the Keychain for the provided key.
+ */
 actor KeychainHelper: SecureStorage {
     
-    static let shared = KeychainHelper()
+    static let shared = KeychainHelper() // Singleton instance
     
-    private let serviceName = "com.TripJournal.service"
+    private let serviceName = "com.TripJournal.service" // Keychain service identifier
     
     private init() {}
     
+    /**
+     Saves data to the Keychain for the given key.
+     
+     - Parameters:
+        - data: The data to be saved.
+        - key: The key under which the data will be stored.
+     
+     - Throws: KeychainError if unable to save data.
+     */
     func save(data: Data, forKey key: String) async throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -63,7 +98,7 @@ actor KeychainHelper: SecureStorage {
         ]
         
         let attributes: [String: Any] = [
-            kSecValueData as String: data,  // The actual data to save (e.g., token)
+            kSecValueData as String: data,
             kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlocked
         ]
         
@@ -71,7 +106,6 @@ actor KeychainHelper: SecureStorage {
             let status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
             
             if status == errSecItemNotFound {
-                // If the item is not found, we add it instead
                 let addStatus = SecItemAdd(query.merging(attributes) { (_, new) in new } as CFDictionary, nil)
                 if addStatus == errSecSuccess {
                     continuation.resume(returning: ())
@@ -79,16 +113,20 @@ actor KeychainHelper: SecureStorage {
                     continuation.resume(throwing: KeychainError.unableToSaveData)
                 }
             } else if status == errSecSuccess {
-                // Successfully updated the existing item
                 continuation.resume(returning: ())
             } else {
-                // Something went wrong with the update
                 continuation.resume(throwing: KeychainError.unableToUpdateData)
             }
         }
     }
     
-    
+    /**
+     Retrieves data from the Keychain for the given key.
+     
+     - Parameter key: The key associated with the data to be retrieved.
+     - Returns: The data retrieved from the Keychain or nil if no data is found.
+     - Throws: KeychainError if unable to retrieve data.
+     */
     func get(forKey key: String) async throws -> Data? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -111,6 +149,12 @@ actor KeychainHelper: SecureStorage {
         }
     }
     
+    /**
+     Deletes data from the Keychain for the given key.
+     
+     - Parameter key: The key associated with the data to be deleted.
+     - Throws: KeychainError if unable to delete data.
+     */
     func delete(forKey key: String) async throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -129,6 +173,14 @@ actor KeychainHelper: SecureStorage {
     }
 }
 
+/**
+ UserDefaultsStorage provides an alternative implementation of the SecureStorage protocol, using UserDefaults to store data. It offers the same interface for saving, retrieving, and deleting data asynchronously, but operates in the less secure UserDefaults storage instead of the Keychain.
+ 
+ Methods:
+ - `save(data:forKey:)`: Saves the provided data to UserDefaults.
+ - `get(forKey:)`: Retrieves data from UserDefaults.
+ - `delete(forKey:)`: Deletes data from UserDefaults.
+ */
 class UserDefaultsStorage: SecureStorage {
     private let defaults = UserDefaults.standard
     
@@ -144,143 +196,3 @@ class UserDefaultsStorage: SecureStorage {
         defaults.removeObject(forKey: key)
     }
 }
-
-
-
-
-
-
-
-
-//actor KeychainHelper: TokenProvider {
-//
-//    static let shared = KeychainHelper()
-//    private let serviceName = "com.TripJournal.service"
-//    private let accountName = "authToken"
-//
-//    private init() {}
-//
-//    // MARK: - Save Token Asynchronously
-//    func saveToken(_ token: Token) async throws {
-//        let tokenData = try JSONEncoder().encode(token)
-//        let query: [String: Any] = keychainQuery()
-//
-//        let attributes: [String: Any] = [
-//            kSecValueData as String: tokenData,
-//            kSecAttrAccessible as String: kSecAttrAccessibleWhenUnlocked
-//        ]
-//
-//        return try await withCheckedThrowingContinuation { continuation in
-//            // Try updating the existing token if it exists
-//            let status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
-//
-//            if status == errSecItemNotFound {
-//                // If the token doesn't exist, add it
-//                let status = SecItemAdd(query.merging(attributes) { (_, new) in new } as CFDictionary, nil)
-//                if status == errSecSuccess {
-//                    continuation.resume(returning: ())
-//                } else {
-//                    continuation.resume(throwing: KeychainError.unableToSaveToken)
-//                }
-//            } else if status == errSecSuccess {
-//                continuation.resume(returning: ())
-//            } else {
-//                continuation.resume(throwing: KeychainError.unableToSaveToken)
-//            }
-//        }
-//    }
-//
-//
-//    //TODO: - Get Token asynchronously
-//    func getToken() async throws -> Token? {
-//        let query: [String: Any] = keychainQuery(additionalAttributes: [kSecReturnData as String: kCFBooleanTrue!,
-//                                                                        kSecMatchLimit as String: kSecMatchLimitOne])
-//
-//        let token: Token? = try await withCheckedThrowingContinuation { continuation in
-//            var dataTypeRef: AnyObject? = nil
-//            let status = SecItemCopyMatching(query as CFDictionary, &dataTypeRef)
-//
-//            switch status {
-//            case errSecSuccess:
-//                guard let data = dataTypeRef as? Data else {
-//                    continuation.resume(throwing: KeychainError.unableToRetrieveToken)
-//                    return
-//                }
-//                do {
-//                    let token = try JSONDecoder().decode(Token.self, from: data)
-//                    continuation.resume(returning: token)
-//                } catch {
-//                    continuation.resume(throwing: error)
-//                }
-//            case errSecItemNotFound:
-//                continuation.resume(returning: nil)  // Token not found, return nil
-//            case errSecAuthFailed:
-//                continuation.resume(throwing: KeychainError.authenticationFailed)
-//            case errSecInteractionNotAllowed:
-//                continuation.resume(throwing: KeychainError.interactionNotAllowed)
-//            default:
-//                continuation.resume(throwing: KeychainError.unableToRetrieveToken)
-//            }
-//        }
-//
-//        // Check for token expiration if expirationDate is available
-//        if let token = token, let expirationDate = token.expirationDate, expirationDate < Date() {
-//            try await deleteToken()  // Delete expired token
-//            return nil  // Return nil since the token is expired
-//        }
-//
-//        return token  // Return the valid token
-//    }
-//
-//    func deleteToken() async throws {
-//        let query: [String: Any] = keychainQuery()
-//
-//        // Perform keychain operations asynchronously
-//        return try await withCheckedThrowingContinuation { continuation in
-//            let status = SecItemDelete(query as CFDictionary)
-//
-//            if status == errSecSuccess {
-//                continuation.resume(returning: ())
-//            } else {
-//                continuation.resume(throwing: KeychainError.unableToDeleteToken)
-//            }
-//        }
-//    }
-//
-//    private func keychainQuery(additionalAttributes: [String: Any] = [:]) -> [String: Any] {
-//        var query: [String: Any] = [
-//            kSecClass as String: kSecClassGenericPassword,
-//            kSecAttrService as String: serviceName,
-//            kSecAttrAccount as String: accountName
-//        ]
-//
-//        // Merge any additional attributes for specific operations
-//        query.merge(additionalAttributes) { (_, new) in new }
-//
-//        return query
-//    }
-//
-//
-//    enum KeychainError: LocalizedError {
-//        case unableToSaveToken
-//        case unableToDeleteToken
-//        case unableToRetrieveToken
-//        case authenticationFailed
-//        case interactionNotAllowed
-//
-//        var errorDescription: String? {
-//            switch self {
-//            case .unableToSaveToken:
-//                return "Failed to save the token to Keychain."
-//            case .unableToDeleteToken:
-//                return "Failed to delete the token from Keychain."
-//            case .unableToRetrieveToken:
-//                return "Failed to retrieve the token from Keychain."
-//            case .authenticationFailed:
-//                return "Authentication failed. Could not access the Keychain."
-//            case .interactionNotAllowed:
-//                return "Interaction with the Keychain is not allowed at this time."
-//            }
-//        }
-//    }
-//}

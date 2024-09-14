@@ -31,6 +31,7 @@ enum NetworkError: Error {
     case invalidValue
     case unauthorized
     case notFound
+    case noConnection
 }
 
 enum SessionError: Error {

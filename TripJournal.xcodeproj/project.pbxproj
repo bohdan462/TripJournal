@@ -41,6 +41,7 @@
 		CA81F2892C950C80002485FD /* JournalService+Live.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2882C950C80002485FD /* JournalService+Live.swift */; };
 		CA81F28B2C952696002485FD /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F28A2C952696002485FD /* TokenManager.swift */; };
 		CA81F28D2C9536D3002485FD /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F28C2C9536D3002485FD /* AuthService.swift */; };
+		CAAC55632C96001100E034AF /* JournalServiceFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAAC55622C96001100E034AF /* JournalServiceFacade.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,6 +80,7 @@
 		CA81F2882C950C80002485FD /* JournalService+Live.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalService+Live.swift"; sourceTree = "<group>"; };
 		CA81F28A2C952696002485FD /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		CA81F28C2C9536D3002485FD /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		CAAC55622C96001100E034AF /* JournalServiceFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalServiceFacade.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,6 +235,7 @@
 				07BCBA882B5D65AD00C6F687 /* JournalService+Unimplemented.swift */,
 				CA81F2882C950C80002485FD /* JournalService+Live.swift */,
 				CA81F28C2C9536D3002485FD /* AuthService.swift */,
+				CAAC55622C96001100E034AF /* JournalServiceFacade.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -335,6 +338,7 @@
 				075A90F32B446A18009A1DCB /* TripList.swift in Sources */,
 				CA81F28D2C9536D3002485FD /* AuthService.swift in Sources */,
 				CA81F2802C94EA94002485FD /* NetworkConstants.swift in Sources */,
+				CAAC55632C96001100E034AF /* JournalServiceFacade.swift in Sources */,
 				07BCBA8B2B5D65D200C6F687 /* JournalService+Environment.swift in Sources */,
 				CA81F2842C9502F9002485FD /* NetworkClient.swift in Sources */,
 				075A90F92B446A6F009A1DCB /* TripCell.swift in Sources */,

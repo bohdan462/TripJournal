@@ -11,19 +11,24 @@ protocol JournalService {
     ///   - username: Username.
     ///   - password: Password.
     /// - Returns: A token that can be used to interact with the API.
-    @discardableResult
-    func register(username: String, password: String) async throws -> Token
-
-    /// Login to an existing account.
-    /// - Parameters:
-    ///   - username: Username.
-    ///   - password: Password.
-    /// - Returns: A token that can be used to interact with the API.
-    @discardableResult
-    func logIn(username: String, password: String) async throws -> Token
-
-    /// Log-outs the user, by deleting the token and updating the isAuthenticated publisher.
-    func logOut()
+    ///
+    ///
+    ///
+//    @discardableResult
+//    func register(username: String, password: String) async throws -> Token
+//
+//    /// Login to an existing account.
+//    /// - Parameters:
+//    ///   - username: Username.
+//    ///   - password: Password.
+//    /// - Returns: A token that can be used to interact with the API.
+//    @discardableResult
+//    func logIn(username: String, password: String) async throws -> Token
+//
+//    /// Log-outs the user, by deleting the token and updating the isAuthenticated publisher.
+//    func logOut()
+    
+    
 
     /// Creates a new trip.
     /// - Parameter request: Trip creation request.

@@ -12,6 +12,7 @@ protocol CacheService {
     func getCachedData<T: Codable>(for key: String) -> T?
     func cacheData<T: Codable>(_ data: T, for key: String, expiresIn: TimeInterval?)
     func clearCache(for key: String)
+    func clearAllCache()
 }
 
 // A struct to hold cached objects along with their expiration date
@@ -56,7 +57,7 @@ class CacheServiceManager: CacheService {
         cache.removeObject(forKey: key as NSString)
     }
     
-    // Optional: Clear all cache
+    //Clear all cache
     func clearAllCache() {
         cache.removeAllObjects()
     }
