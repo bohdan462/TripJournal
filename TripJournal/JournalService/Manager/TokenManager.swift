@@ -55,7 +55,7 @@ enum TokenState {
  - `saveTokenToStorage(token:username:password:)`: Saves the token and optionally user credentials to secure storage.
  - `deleteTokenFromStorage()`: Deletes the token and credentials from secure storage.
  */
-actor TokenManager: ObservableObject {
+class TokenManager: ObservableObject {
 
     // MARK: - Published State
     @Published private(set) var state: TokenState = .idle
@@ -90,8 +90,10 @@ actor TokenManager: ObservableObject {
      - Returns: A valid Token if one exists and is not expired.
      */
     func getToken() async throws -> Token? {
+        print("Token:\(cachedToken?.accessToken)")
         // If a cached token exists and is still valid, return it
         if let cachedToken = cachedToken, !isTokenExpired(cachedToken) {
+            print("Using cached token")
             return cachedToken
         }
 
@@ -102,14 +104,17 @@ actor TokenManager: ObservableObject {
                 return try await handleTokenRefresh(token: token)
             }
             cachedToken = token  // Cache the valid token
+            print("Loaded token from storage")
             return token
         }
+        print("No token found")
         return nil  // No token found
     }
 
     /**
      Fetches a token and updates the internal state accordingly. This method will attempt to load or refresh a token and publish the result via the `state` property.
      */
+    @MainActor
     func fetchToken() async {
         state = .fetching
         do {
@@ -131,6 +136,7 @@ actor TokenManager: ObservableObject {
         - username: Optional username to be saved with the token.
         - password: Optional password to be saved with the token.
      */
+    @MainActor
     func saveToken(_ token: Token, username: String? = nil, password: String? = nil) async {
         state = .fetching
         do {
@@ -145,6 +151,7 @@ actor TokenManager: ObservableObject {
     /**
      Deletes the token and associated credentials from storage and clears the in-memory cache.
      */
+    @MainActor
     func deleteToken() async {
         state = .fetching
         do {
@@ -177,6 +184,7 @@ actor TokenManager: ObservableObject {
      */
     private func isTokenExpired(_ token: Token) -> Bool {
         guard let expirationDate = token.expirationDate else { return false }
+        print("Checking if expired")
         return expirationDate.timeIntervalSinceNow < tokenExpirationThreshold
     }
 
@@ -187,6 +195,7 @@ actor TokenManager: ObservableObject {
      - Throws: An error if refreshing the token fails.
      - Returns: A new valid Token if the refresh is successful, or nil if not.
      */
+    @MainActor
     private func handleTokenRefresh(token: Token?) async throws -> Token? {
         if isRefreshing {
             return try await withCheckedThrowingContinuation { continuation in
@@ -238,7 +247,7 @@ actor TokenManager: ObservableObject {
             throw KeychainError.unableToRetrieveData
         }
         
-        let authService = AuthServiceImpl(tokenManager: self)
+        let authService = AuthenticationService(tokenManager: self)
         let retryCount = 3
         let delay: TimeInterval = 1.0 // 1 second delay for exponential backoff
         

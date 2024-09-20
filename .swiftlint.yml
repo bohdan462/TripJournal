@@ -1,0 +1,115 @@
+# SwiftLint Configuration
+
+# Disable rules that are not critical to your current work
+disabled_rules:
+  - trailing_whitespace # Disable trailing whitespace checking
+  - line_length # Disable line length limits for now
+  - force_cast # Disable force casting rule if you need more flexibility
+  - force_try # Disable force try warning if used cautiously
+  - todo # Disable warnings about TODOs in your code
+
+# Enable strict rules to improve code quality and modularity
+opt_in_rules:
+  - closure_end_indentation # Ensures closures are indented properly
+  - file_length # Warns if files are too long, aiding in separation of concerns
+  - function_body_length # Limits the length of function bodies
+  - type_body_length # Ensures class/struct bodies are not excessively large
+  - vertical_whitespace # Helps enforce readability with proper whitespace usage
+  - nesting # Limits the depth of nesting (e.g., in loops or if statements)
+  - custom_rules # Allows creating custom rules (example provided below)
+
+# Customize line length to be more forgiving (uncomment to enable)
+# line_length:
+#   warning: 120
+#   error: 140
+
+# Limits for function length and type length
+function_body_length:
+  warning: 40 # Warn if a function is longer than 40 lines
+  error: 60   # Error if a function exceeds 60 lines
+
+type_body_length:
+  warning: 250 # Warn if a class/struct exceeds 250 lines
+  error: 300   # Error if it exceeds 300 lines
+
+# File length (ensures encapsulation of logic into smaller files)
+file_length:
+  warning: 400
+  error: 600
+
+# Exclude certain directories or files
+excluded:
+  - Pods # Exclude the Pods directory for CocoaPods
+  - Carthage
+  - Tests
+
+# Custom rules to enforce specific project standards
+custom_rules:
+  no_force_unwrapping:
+    name: "No Force Unwrapping"
+    regex: "!\\s*$"
+    message: "Avoid using force unwrapping!"
+    severity: error
+
+  no_hardcoded_strings:
+    name: "No Hardcoded Strings"
+    regex: "\"[^\"]+\""
+    message: "Avoid using hardcoded strings, use a localization method instead!"
+    severity: warning
+
+# Minimum comment percentage (helps maintain code documentation)
+minimum_comment_ratio:
+  warning: 10 # Warn if less than 10% of the code in a file is commented
+  error: 5    # Error if less than 5% of the code in a file is commented
+
+# Nesting rule (limits how deep you can nest logic)
+nesting:
+  type_level: 1 # Max nesting level for types (classes/structs)
+  function_level: 3 # Max nesting level inside functions
+
+# Vertical Whitespace (enforces readability)
+vertical_whitespace:
+  max_empty_lines: 1 # Max empty lines allowed in a row
+  min_empty_lines: 1 # Enforces spacing between functions, properties
+
+# Type Name Length (helps with keeping names concise)
+type_name:
+  max_length: 40
+  min_length: 3
+
+# Function Parameter Limit (ensures functions are not overloaded with parameters)
+function_parameter_count:
+  warning: 5 # Warn if a function has more than 5 parameters
+  error: 8   # Error if it exceeds 8
+
+# Cyclomatic Complexity (limits complexity in functions, forcing simpler logic)
+cyclomatic_complexity:
+  warning: 10
+  error: 15
+
+# Enforce swiftlint across all files, with custom configurations for different layers
+included:
+  - Sources/Networking
+  - Sources/Controllers
+  - Sources/Views
+  - Sources/Persistence
+
+# Networking Layer (enforces clean networking logic)
+opt_in_rules:
+  - force_unwrapping # Disallow force unwrapping in the networking layer
+  - force_try # Disallow force try
+  - force_cast # Disallow force casting for safety
+
+# Persistence Layer (limit complexity, and enforce good separation of concerns)
+type_body_length:
+  warning: 100 # Keep persistence classes shorter
+  error: 150
+
+# View Layer (UI Logic should be lean and concise)
+function_body_length:
+  warning: 20 # View logic should be concise
+  error: 30
+  exclude_from: # Exclude certain view-related extensions or helper methods
+    - UITableViewCell
+    - UICollectionViewCell
+

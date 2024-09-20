@@ -172,27 +172,3 @@ actor KeychainHelper: SecureStorage {
         }
     }
 }
-
-/**
- UserDefaultsStorage provides an alternative implementation of the SecureStorage protocol, using UserDefaults to store data. It offers the same interface for saving, retrieving, and deleting data asynchronously, but operates in the less secure UserDefaults storage instead of the Keychain.
- 
- Methods:
- - `save(data:forKey:)`: Saves the provided data to UserDefaults.
- - `get(forKey:)`: Retrieves data from UserDefaults.
- - `delete(forKey:)`: Deletes data from UserDefaults.
- */
-class UserDefaultsStorage: SecureStorage {
-    private let defaults = UserDefaults.standard
-    
-    func save(data: Data, forKey key: String) async throws {
-        defaults.set(data, forKey: key)
-    }
-    
-    func get(forKey key: String) async throws -> Data? {
-        return defaults.data(forKey: key)
-    }
-    
-    func delete(forKey key: String) async throws {
-        defaults.removeObject(forKey: key)
-    }
-}

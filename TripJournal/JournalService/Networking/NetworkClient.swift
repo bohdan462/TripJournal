@@ -86,12 +86,12 @@ extension NetworkClientProtocol {
     func sendRequest<T: Decodable>(
         _ request: URLRequest,
         responseType: T.Type,
-        session: NetworkSession
+        session: URLSession
     ) async throws -> T {
+        print("NetworkClient -> sendRequest() called")
         let (data, response) = try await session.data(for: request)
         
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode) else {
+        guard let httpResponse = response as? HTTPURLResponse else {
             throw NetworkError.badResponse
         }
         
@@ -99,9 +99,11 @@ extension NetworkClientProtocol {
         case 200...299:
             do {
                 let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .iso8601 // Ensure consistent date decoding
+                decoder.dateDecodingStrategy = .iso8601
                 return try decoder.decode(T.self, from: data)
             } catch {
+//                print("Respomse: \(response.description)")
+//                print(String(data: data, encoding: .utf8))
                 throw NetworkError.failedToDecodeResponse
             }
         case 401:
@@ -226,14 +228,14 @@ struct CustomRequestConfigurable: RequestConfigurable {
 class NetworkClient: NetworkClientProtocol {
     
     static let shared = NetworkClient()
-    private let session: NetworkSession
+    private let session: URLSession
     
     /**
      Initializes the `NetworkClient` with a custom session. The default session is `URLSession.shared`.
      
      - Parameter session: A custom `NetworkSession` to handle network requests. Defaults to `URLSession.shared`.
      */
-    init(session: NetworkSession = URLSession.shared) {
+    init(session: URLSession = URLSession.shared) {
         self.session = session
     }
     
@@ -257,42 +259,4 @@ class NetworkClient: NetworkClientProtocol {
         let request = buildRequest(for: endpoint, method: method, config: config)
         return try await sendRequest(request, responseType: responseType, session: session)
     }
-}
-
-// MARK: - URLSession Extension to Conform to NetworkSession Protocol
-/**
- Extends `URLSession` to conform to the `NetworkSession` protocol, making it easier to inject into `NetworkClient` for flexibility and testing.
-
- ## Methods:
- - **data(for:)**: Executes the request and returns the response data.
- */
-extension URLSession: NetworkSession {
-    /**
-     Executes the network request and returns the response data and metadata.
-     
-     - Parameter request: The `URLRequest` to execute.
-     - Throws: An error if the request fails.
-     - Returns: A tuple containing the response data and the URL response.
-     */
-    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-        return try await self.data(for: request)
-    }
-}
-
-// MARK: - NetworkSession Protocol for Dependency Injection
-/**
- A protocol to abstract the network session, making it easy to inject custom network handling classes or mock implementations for testing.
-
- ## Methods:
- - **data(for:)**: Executes the network request and returns the response data.
- */
-protocol NetworkSession {
-    /**
-     Executes the network request and returns the response data and metadata.
-     
-     - Parameter request: The `URLRequest` to execute.
-     - Throws: An error if the request fails.
-     - Returns: A tuple containing the response data and the URL response.
-     */
-    func data(for request: URLRequest) async throws -> (Data, URLResponse)
 }

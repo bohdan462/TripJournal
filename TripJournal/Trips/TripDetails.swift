@@ -11,20 +11,20 @@ struct TripDetails: View {
         _addAction = addAction
         self.deletionHandler = deletionHandler
     }
-
+    
     private let deletionHandler: () -> Void
-
+    
     @Binding private var addAction: () -> Void
-
+    
     @State private var trip: Trip
     @State private var eventFormMode: EventForm.Mode?
     @State private var isDeleteConfirmationPresented = false
     @State private var isLoading = false
     @State private var error: Error?
-
+    
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.journalService) private var journalService
-
+    @EnvironmentObject var journalManager: JournalManager 
+    
     var body: some View {
         contentView
             .onAppear {
@@ -37,7 +37,7 @@ struct TripDetails: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: toolbar)
             .sheet(item: $eventFormMode) { mode in
-                EventForm(tripId: trip.id, mode: mode) {
+                EventForm(tripId: trip.tripId!, mode: mode) {
                     Task {
                         await reloadTrip()
                     }
@@ -52,7 +52,7 @@ struct TripDetails: View {
             }
             .loadingOverlay(isLoading)
     }
-
+    
     @ToolbarContentBuilder
     private func toolbar() -> some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
@@ -62,7 +62,7 @@ struct TripDetails: View {
             .tint(.red)
         }
     }
-
+    
     @ViewBuilder
     private var contentView: some View {
         if trip.events.isEmpty {
@@ -71,16 +71,16 @@ struct TripDetails: View {
             eventsView
         }
     }
-
+    
     private var eventsView: some View {
         ScrollView(.vertical) {
-            ForEach(trip.events) { event in
+            ForEach(journalManager.events) { event in
                 EventCell(
                     event: event,
                     edit: { eventFormMode = .edit(event) },
                     mediaUploadHandler: { data in
                         Task {
-                            await uploadMedia(eventId: event.id, data: data)
+//                            await uploadMedia(eventId: event.id, data: data)
                         }
                     },
                     mediaDeletionHandler: { mediaId in
@@ -95,7 +95,7 @@ struct TripDetails: View {
             await reloadTrip()
         }
     }
-
+    
     private var emptyView: some View {
         ContentUnavailableView(
             label: {
@@ -107,52 +107,41 @@ struct TripDetails: View {
             }
         )
     }
-
+    
     // MARK: - Networking
-
-    private func uploadMedia(eventId: Event.ID, data: Data) async {
+    
+    private func uploadMedia(eventId: Int, data: Data) async {
+        
         isLoading = true
-        let request = MediaCreate(eventId: eventId, base64Data: data)
-        do {
-            try await journalService.createMedia(with: request)
-            await reloadTrip()
-        } catch {
-            self.error = error
-        }
+    
+        //create Media
+        await journalManager.createMedia(with: data, eventId: eventId)
+        
         isLoading = false
     }
-
-    private func deleteMedia(withId mediaId: Media.ID) async {
+    
+    private func deleteMedia(withId mediaId: Int) async {
         isLoading = true
-        do {
-            try await journalService.deleteMedia(withId: mediaId)
-            await reloadTrip()
-        } catch {
-            self.error = error
-        }
+        
+        await journalManager.deleteMedia(withId: mediaId)
+        await reloadTrip()
+        
         isLoading = false
     }
-
+    
     private func reloadTrip() async {
-        let id = trip.id
-        do {
-            let updatedTrip = try await journalService.getTrip(withId: id)
-            trip = updatedTrip
-        } catch {
-            self.error = error
-        }
+        let id = trip.tripId!
+        let updatedTrip =  await journalManager.getTrip(withId: id)
+        trip = updatedTrip
     }
-
+    
     private func deleteTrip() async {
         isLoading = true
-        do {
-            try await journalService.deleteTrip(withId: trip.id)
-            await MainActor.run {
-                deletionHandler()
-                dismiss()
-            }
-        } catch {
-            self.error = error
+        
+        await journalManager.deleteTrip(withId: trip.tripId!)
+        await MainActor.run {
+            deletionHandler()
+            dismiss()
         }
         isLoading = false
     }

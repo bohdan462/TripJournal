@@ -30,7 +30,7 @@ struct MediaCarousel: View {
         medias: [Media],
         placement: Placement,
         additionHandler: @escaping (Data) -> Void,
-        deletionHandler: @escaping (Media.ID) -> Void
+        deletionHandler: @escaping (Int) -> Void
     ) {
         self.medias = medias
         self.placement = placement
@@ -41,13 +41,14 @@ struct MediaCarousel: View {
     private let medias: [Media]
     private let placement: Placement
     private let additionHandler: (Data) -> Void
-    private let deletionHandler: (Media.ID) -> Void
+    private let deletionHandler: (Int) -> Void
 
     @State private var selected: Media?
     @State private var imageItem: PhotosPickerItem?
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.journalService) private var journalService
+//    @Environment(\.journalService) private var journalService
+    var journalService = UnimplementedJournalService()
 
     // MARK: - Body
 
@@ -120,7 +121,7 @@ struct MediaCarousel: View {
         )
         .contextMenu {
             Button("Delete media", systemImage: "trash", role: .destructive) {
-                deletionHandler(media.id)
+                deletionHandler(media.mediaId!)
             }
         }
         .frame(height: placement.height)

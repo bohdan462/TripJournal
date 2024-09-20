@@ -62,4 +62,3 @@ class CacheServiceManager: CacheService {
         cache.removeAllObjects()
     }
 }
-

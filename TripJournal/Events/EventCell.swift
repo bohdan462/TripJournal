@@ -5,7 +5,7 @@ struct EventCell: View {
     let event: Event
     let edit: () -> Void
     let mediaUploadHandler: (Data) -> Void
-    let mediaDeletionHandler: (Media.ID) -> Void
+    let mediaDeletionHandler: (Int) -> Void
 
     // MARK: - Body
 

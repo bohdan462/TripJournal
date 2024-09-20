@@ -20,7 +20,6 @@ enum TripRouter {
     case handleEvents(String)
     case media
     case handleMedia(String)
-//    case refreshToken
     
     // MARK: - Endpoints
     private var path: String {
@@ -41,9 +40,6 @@ enum TripRouter {
             return TripRouter.base + "media"
         case .handleMedia(let mediaId):
             return TripRouter.base + "media/\(mediaId)"
-//        case .refreshToken:
-//            return TripRouter.base + "toke/refresh"
-            
         }
 
     }

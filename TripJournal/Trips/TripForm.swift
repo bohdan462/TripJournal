@@ -1,6 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct TripForm: View {
+    
+    @Environment(\.modelContext) private var context
+    
     /// Determines if the form is being used to add a new trip or edit an existing one.
     enum Mode: Hashable, Identifiable {
         case add
@@ -51,7 +55,7 @@ struct TripForm: View {
     @State private var error: Error?
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.journalService) private var journalService
+    @EnvironmentObject var journalManager: JournalManager
 
     // MARK: - Body
 
@@ -99,7 +103,7 @@ struct TripForm: View {
 
                 Button("Delete Trip", systemImage: "trash", role: .destructive) {
                     Task {
-                        await deleteTrip(withId: trip.id)
+                        await deleteTrip(withId: trip.tripId!)
                     }
                 }
                 .buttonStyle(.borderedProminent)
@@ -123,7 +127,7 @@ struct TripForm: View {
                     }
                 case let .edit(trip):
                     Task {
-                        await editTrip(withId: trip.id)
+                        await editTrip(withId: trip.tripId!)
                     }
                 }
             }
@@ -146,8 +150,20 @@ struct TripForm: View {
         do {
             try validateForm()
             let request = TripCreate(name: name, startDate: startDate, endDate: endDate)
-            try await journalService.createTrip(with: request)
+           let trip = await journalManager.createTrip(from: request)
+            
+            
+//            do {
+//                context.insert(trip)
+//                try context.save()
+//            } catch {
+//                print("Error creating trip: \(error.localizedDescription)")
+//                
+//            }
+//            
+            
             await MainActor.run {
+                
                 updateHandler()
                 dismiss()
             }
@@ -157,15 +173,35 @@ struct TripForm: View {
         isLoading = false
     }
 
-    private func editTrip(withId id: Trip.ID) async {
+    private func editTrip(withId id: Int) async {
         isLoading = true
         do {
+            // Validate form inputs
             try validateForm()
+
+            // Create the update request object
             let request = TripUpdate(name: name, startDate: startDate, endDate: endDate)
-            try await journalService.updateTrip(withId: id, and: request)
-            await MainActor.run {
-                updateHandler()
-                dismiss()
+            
+            // Fetch the trip from the context
+            let fetchDescriptor = FetchDescriptor<Trip>(predicate: #Predicate<Trip> { $0.tripId == id })
+            
+            if let tripToEdit = try context.fetch(fetchDescriptor).first {
+                // Update the trip's properties with new values
+                tripToEdit.name = request.name
+                tripToEdit.startDate = request.startDate
+                tripToEdit.endDate = request.endDate
+                tripToEdit.isSynced = false  // Set to false, since it's now modified and unsynced
+
+                // Save the context to persist changes
+                try context.save()
+
+                // Notify and dismiss
+                await MainActor.run {
+                    updateHandler()
+                    dismiss()
+                }
+            } else {
+                throw NSError(domain: "", code: 404, userInfo: [NSLocalizedDescriptionKey: "Trip not found"])
             }
         } catch {
             self.error = error
@@ -173,17 +209,19 @@ struct TripForm: View {
         isLoading = false
     }
 
-    private func deleteTrip(withId id: Trip.ID) async {
+
+    private func deleteTrip(withId id: Int) async {
         isLoading = true
-        do {
-            try await journalService.deleteTrip(withId: id)
+        let fetchDescriptor = FetchDescriptor<Trip>(predicate: #Predicate<Trip> { $0.tripId == id })
+        if let tripToDelete = (try? context.fetch(fetchDescriptor).first) {
+             context.delete(tripToDelete)
+             try? context.save()
+        }
+            await journalManager.deleteTrip(withId: id)
             await MainActor.run {
                 updateHandler()
                 dismiss()
             }
-        } catch {
-            self.error = error
-        }
         isLoading = false
     }
 }

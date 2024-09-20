@@ -1,13 +1,16 @@
-import SwiftUI
-
-private struct JournalServiceKey: EnvironmentKey {
-    static var defaultValue: JournalService = UnimplementedJournalService()
-}
-
-extension EnvironmentValues {
-    /// A service that can used to interact with the trip journal API.
-    var journalService: JournalService {
-        get { self[JournalServiceKey.self] }
-        set { self[JournalServiceKey.self] = newValue }
-    }
-}
+//import SwiftUI
+//import SwiftData
+//
+//private struct JournalManagerKey: EnvironmentKey {
+//    static var defaultValue: JournalManager {
+//         fatalError("JournalManager should be provided by the environment")
+//     }
+//}
+//
+//extension EnvironmentValues {
+//    /// A service that can used to interact with the trip journal API.
+//    var journalManager: JournalManager {
+//        get { self[JournalManagerKey.self] }
+//        set { self[JournalManagerKey.self] = newValue }
+//    }
+//}

@@ -30,11 +30,13 @@
 		07BCBA8B2B5D65D200C6F687 /* JournalService+Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BCBA8A2B5D65D200C6F687 /* JournalService+Environment.swift */; };
 		07BCBA8F2B5D7EC500C6F687 /* MediaCarousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BCBA8E2B5D7EC500C6F687 /* MediaCarousel.swift */; };
 		07F6695D2B589A1E002F8D18 /* AddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6695C2B589A1E002F8D18 /* AddButton.swift */; };
+		CA3C35942C9915BB00FA7648 /* JournalManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA3C35932C9915BB00FA7648 /* JournalManager.swift */; };
+		CA3C35972C99F14500FA7648 /* FileManagerStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA3C35962C99F14500FA7648 /* FileManagerStorage.swift */; };
+		CA3C359C2C9A062100FA7648 /* JournalLocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA3C359B2C9A062100FA7648 /* JournalLocalService.swift */; };
 		CA81F2762C94BF72002485FD /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2752C94BF72002485FD /* NetworkMonitor.swift */; };
 		CA81F2782C94C14D002485FD /* TripRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2772C94C14D002485FD /* TripRouter.swift */; };
 		CA81F27A2C94CCC3002485FD /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2792C94CCC3002485FD /* Secrets.swift */; };
 		CA81F27C2C94D613002485FD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F27B2C94D613002485FD /* KeychainHelper.swift */; };
-		CA81F27E2C94D6A5002485FD /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F27D2C94D6A5002485FD /* CacheManager.swift */; };
 		CA81F2802C94EA94002485FD /* NetworkConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F27F2C94EA94002485FD /* NetworkConstants.swift */; };
 		CA81F2842C9502F9002485FD /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2832C9502F8002485FD /* NetworkClient.swift */; };
 		CA81F2862C9507C7002485FD /* CacheServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2852C9507C7002485FD /* CacheServiceManager.swift */; };
@@ -42,6 +44,10 @@
 		CA81F28B2C952696002485FD /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F28A2C952696002485FD /* TokenManager.swift */; };
 		CA81F28D2C9536D3002485FD /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F28C2C9536D3002485FD /* AuthService.swift */; };
 		CAAC55632C96001100E034AF /* JournalServiceFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAAC55622C96001100E034AF /* JournalServiceFacade.swift */; };
+		CADE04352C9C9779004627C3 /* TripJournalContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04342C9C9779004627C3 /* TripJournalContainer.swift */; };
+		CADE043D2C9D2F68004627C3 /* TJSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE043C2C9D2F68004627C3 /* TJSyncController.swift */; };
+		CADE043F2C9DFBB0004627C3 /* ServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE043E2C9DFBB0004627C3 /* ServiceFactory.swift */; };
+		CADE04422C9E0340004627C3 /* TripController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04412C9E0340004627C3 /* TripController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,11 +75,13 @@
 		07BCBA8A2B5D65D200C6F687 /* JournalService+Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalService+Environment.swift"; sourceTree = "<group>"; };
 		07BCBA8E2B5D7EC500C6F687 /* MediaCarousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCarousel.swift; sourceTree = "<group>"; };
 		07F6695C2B589A1E002F8D18 /* AddButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButton.swift; sourceTree = "<group>"; };
+		CA3C35932C9915BB00FA7648 /* JournalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalManager.swift; sourceTree = "<group>"; };
+		CA3C35962C99F14500FA7648 /* FileManagerStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerStorage.swift; sourceTree = "<group>"; };
+		CA3C359B2C9A062100FA7648 /* JournalLocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalLocalService.swift; sourceTree = "<group>"; };
 		CA81F2752C94BF72002485FD /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		CA81F2772C94C14D002485FD /* TripRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripRouter.swift; sourceTree = "<group>"; };
 		CA81F2792C94CCC3002485FD /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		CA81F27B2C94D613002485FD /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
-		CA81F27D2C94D6A5002485FD /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		CA81F27F2C94EA94002485FD /* NetworkConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConstants.swift; sourceTree = "<group>"; };
 		CA81F2832C9502F8002485FD /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
 		CA81F2852C9507C7002485FD /* CacheServiceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheServiceManager.swift; sourceTree = "<group>"; };
@@ -81,6 +89,10 @@
 		CA81F28A2C952696002485FD /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
 		CA81F28C2C9536D3002485FD /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		CAAC55622C96001100E034AF /* JournalServiceFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalServiceFacade.swift; sourceTree = "<group>"; };
+		CADE04342C9C9779004627C3 /* TripJournalContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripJournalContainer.swift; sourceTree = "<group>"; };
+		CADE043C2C9D2F68004627C3 /* TJSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TJSyncController.swift; sourceTree = "<group>"; };
+		CADE043E2C9DFBB0004627C3 /* ServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceFactory.swift; sourceTree = "<group>"; };
+		CADE04412C9E0340004627C3 /* TripController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,17 +125,19 @@
 		075A90E12B446996009A1DCB /* TripJournal */ = {
 			isa = PBXGroup;
 			children = (
+				07BCBA862B5D656E00C6F687 /* JournalService+Mock.swift */,
 				075A90E22B446996009A1DCB /* App.swift */,
 				075A90F02B4469C0009A1DCB /* RootView.swift */,
 				075A90E62B446997009A1DCB /* Assets.xcassets */,
 				07AA89D42B5F242B00405269 /* Auth */,
 				CA81F2742C94BF57002485FD /* Helpers */,
-				07AA89D52B5F243B00405269 /* Events */,
 				07BCBA8C2B5D65ED00C6F687 /* JournalService */,
 				07BCBA8D2B5D666E00C6F687 /* LocationPicker */,
 				07AA89D82B5F256800405269 /* Models */,
 				07AA89D22B5F241200405269 /* Trips */,
+				07AA89D52B5F243B00405269 /* Events */,
 				07AA89D32B5F242100405269 /* Utils */,
+				CADE04342C9C9779004627C3 /* TripJournalContainer.swift */,
 			);
 			path = TripJournal;
 			sourceTree = "<group>";
@@ -179,10 +193,11 @@
 		07BCBA8C2B5D65ED00C6F687 /* JournalService */ = {
 			isa = PBXGroup;
 			children = (
+				CADE04402C9E0333004627C3 /* Controllers */,
+				CA3C35922C99158900FA7648 /* Manager */,
+				CA3C35952C99F12B00FA7648 /* Storage */,
 				CA81F2872C950C5E002485FD /* Service */,
 				CA81F2822C95025F002485FD /* Networking */,
-				CA81F2812C950234002485FD /* Cache */,
-				07BCBA862B5D656E00C6F687 /* JournalService+Mock.swift */,
 			);
 			path = JournalService;
 			sourceTree = "<group>";
@@ -197,32 +212,60 @@
 			path = LocationPicker;
 			sourceTree = "<group>";
 		};
+		CA3C35922C99158900FA7648 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				CA3C35932C9915BB00FA7648 /* JournalManager.swift */,
+				CAAC55622C96001100E034AF /* JournalServiceFacade.swift */,
+				CA81F28A2C952696002485FD /* TokenManager.swift */,
+				CA3C35962C99F14500FA7648 /* FileManagerStorage.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		CA3C35952C99F12B00FA7648 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				CA3C359D2C9A19A900FA7648 /* Local Persistence Layer */,
+				CA81F2812C950234002485FD /* Cache Layer */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		CA3C359D2C9A19A900FA7648 /* Local Persistence Layer */ = {
+			isa = PBXGroup;
+			children = (
+				CA3C359B2C9A062100FA7648 /* JournalLocalService.swift */,
+			);
+			path = "Local Persistence Layer";
+			sourceTree = "<group>";
+		};
 		CA81F2742C94BF57002485FD /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				CA81F2752C94BF72002485FD /* NetworkMonitor.swift */,
 				CA81F27B2C94D613002485FD /* KeychainHelper.swift */,
-				CA81F28A2C952696002485FD /* TokenManager.swift */,
+				CADE043E2C9DFBB0004627C3 /* ServiceFactory.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
 		};
-		CA81F2812C950234002485FD /* Cache */ = {
+		CA81F2812C950234002485FD /* Cache Layer */ = {
 			isa = PBXGroup;
 			children = (
 				CA81F2852C9507C7002485FD /* CacheServiceManager.swift */,
-				CA81F27D2C94D6A5002485FD /* CacheManager.swift */,
 			);
-			path = Cache;
+			path = "Cache Layer";
 			sourceTree = "<group>";
 		};
 		CA81F2822C95025F002485FD /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				CA81F2792C94CCC3002485FD /* Secrets.swift */,
-				CA81F2772C94C14D002485FD /* TripRouter.swift */,
-				CA81F27F2C94EA94002485FD /* NetworkConstants.swift */,
+				CA81F28C2C9536D3002485FD /* AuthService.swift */,
 				CA81F2832C9502F8002485FD /* NetworkClient.swift */,
+				CA81F2772C94C14D002485FD /* TripRouter.swift */,
+				CA81F2792C94CCC3002485FD /* Secrets.swift */,
+				CA81F27F2C94EA94002485FD /* NetworkConstants.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -234,10 +277,17 @@
 				07BCBA8A2B5D65D200C6F687 /* JournalService+Environment.swift */,
 				07BCBA882B5D65AD00C6F687 /* JournalService+Unimplemented.swift */,
 				CA81F2882C950C80002485FD /* JournalService+Live.swift */,
-				CA81F28C2C9536D3002485FD /* AuthService.swift */,
-				CAAC55622C96001100E034AF /* JournalServiceFacade.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		CADE04402C9E0333004627C3 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				CADE043C2C9D2F68004627C3 /* TJSyncController.swift */,
+				CADE04412C9E0340004627C3 /* TripController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -247,6 +297,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 075A90ED2B446997009A1DCB /* Build configuration list for PBXNativeTarget "TripJournal" */;
 			buildPhases = (
+				CADE04432C9E1AF5004627C3 /* ShellScript */,
 				075A90DB2B446996009A1DCB /* Sources */,
 				075A90DC2B446996009A1DCB /* Frameworks */,
 				075A90DD2B446996009A1DCB /* Resources */,
@@ -304,28 +355,53 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		CADE04432C9E1AF5004627C3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		075A90DB2B446996009A1DCB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CADE043D2C9D2F68004627C3 /* TJSyncController.swift in Sources */,
 				07BCBA7A2B5B256500C6F687 /* MediaGallery.swift in Sources */,
 				CA81F2892C950C80002485FD /* JournalService+Live.swift in Sources */,
 				0703FC7A2B493D5B0084DD8A /* LocationService.swift in Sources */,
 				0703FC722B457EF40084DD8A /* Models.swift in Sources */,
+				CADE043F2C9DFBB0004627C3 /* ServiceFactory.swift in Sources */,
 				075A91012B446B17009A1DCB /* AuthView.swift in Sources */,
 				CA81F2862C9507C7002485FD /* CacheServiceManager.swift in Sources */,
 				0703FC742B4583B80084DD8A /* JournalService.swift in Sources */,
 				07AA89D72B5F251800405269 /* Requests.swift in Sources */,
 				075A90E32B446996009A1DCB /* App.swift in Sources */,
 				CA81F28B2C952696002485FD /* TokenManager.swift in Sources */,
+				CA3C359C2C9A062100FA7648 /* JournalLocalService.swift in Sources */,
+				CADE04352C9C9779004627C3 /* TripJournalContainer.swift in Sources */,
 				075A90FD2B446AA9009A1DCB /* Utils.swift in Sources */,
 				075A90FF2B446AD6009A1DCB /* EventForm.swift in Sources */,
 				0703FC782B49351F0084DD8A /* LocationPicker.swift in Sources */,
-				CA81F27E2C94D6A5002485FD /* CacheManager.swift in Sources */,
 				CA81F2782C94C14D002485FD /* TripRouter.swift in Sources */,
+				CADE04422C9E0340004627C3 /* TripController.swift in Sources */,
 				07BCBA892B5D65AD00C6F687 /* JournalService+Unimplemented.swift in Sources */,
 				075A90F12B4469C0009A1DCB /* RootView.swift in Sources */,
+				CA3C35942C9915BB00FA7648 /* JournalManager.swift in Sources */,
 				075A90F72B446A5C009A1DCB /* TripForm.swift in Sources */,
 				07BCBA872B5D656E00C6F687 /* JournalService+Mock.swift in Sources */,
 				0767E7102B573F6300993870 /* LocationSearchView.swift in Sources */,
@@ -335,6 +411,7 @@
 				07F6695D2B589A1E002F8D18 /* AddButton.swift in Sources */,
 				075A90F52B446A41009A1DCB /* TripDetails.swift in Sources */,
 				CA81F27C2C94D613002485FD /* KeychainHelper.swift in Sources */,
+				CA3C35972C99F14500FA7648 /* FileManagerStorage.swift in Sources */,
 				075A90F32B446A18009A1DCB /* TripList.swift in Sources */,
 				CA81F28D2C9536D3002485FD /* AuthService.swift in Sources */,
 				CA81F2802C94EA94002485FD /* NetworkConstants.swift in Sources */,
@@ -486,6 +563,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -521,6 +599,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

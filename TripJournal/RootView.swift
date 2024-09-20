@@ -1,32 +1,33 @@
 import SwiftUI
+import SwiftData
 
 struct RootView: View {
-    let service: JournalService
-
+    
     @State private var addAction: () -> Void = {}
     @State private var isAuthenticated = false
-
-    @Environment(\.journalService) private var journalService
-
-    // MARK: - Body
-
+    
+    @EnvironmentObject var journalManager: JournalManager
+    @EnvironmentObject var tripController: TripController
+    
+    
     var body: some View {
         content
-            .environment(\.journalService, service)
-            .onReceive(service.isAuthenticated.receive(on: DispatchQueue.main)) { isAuthenticated in
+        //            .environment(\.journalManager, service)
+            .onReceive(journalManager.journalFacade.authService.isAuthenticated.receive(on: DispatchQueue.main)) { isAuthenticated in
                 self.isAuthenticated = isAuthenticated
             }
     }
-
-    // MARK: - Views
-
+    
     @ViewBuilder
     private var content: some View {
         if isAuthenticated {
-            TripList(addAction: $addAction)
+            TripList(addAction: $addAction, tripController: tripController)
                 .contentMargins(.bottom, 100)
                 .overlay(alignment: .bottom) {
                     AddButton(action: addAction)
+                }
+                .onAppear {
+                    //TODO: - Fetch or prefetch Trips
                 }
         } else {
             AuthView()

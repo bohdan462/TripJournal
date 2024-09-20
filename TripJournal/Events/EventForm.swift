@@ -23,7 +23,7 @@ struct EventForm: View {
     }
 
     init(
-        tripId: Trip.ID,
+        tripId: Int,
         mode: Mode,
         updateHandler: @escaping () -> Void
     ) {
@@ -45,7 +45,7 @@ struct EventForm: View {
         }
     }
 
-    private let tripId: Trip.ID
+    private let tripId: Int
     private let mode: Mode
     private let updateHandler: () -> Void
     private let title: String
@@ -60,7 +60,7 @@ struct EventForm: View {
     @State private var isLocationPickerPresented = false
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.journalService) private var journalService
+    @EnvironmentObject var journalManager: JournalManager 
 
     // MARK: - Body
 
@@ -124,7 +124,7 @@ struct EventForm: View {
                     }
                 case let .edit(event):
                     Task {
-                        await editEvent(withId: event.id)
+                        await editEvent(withId: event.evetId!)
                     }
                 }
             }
@@ -206,7 +206,7 @@ struct EventForm: View {
 
                 Button("Delete Event", systemImage: "trash", role: .destructive) {
                     Task {
-                        await deleteEvent(withId: event.id)
+                        await deleteEvent(withId: event.evetId!)
                     }
                 }
                 .buttonStyle(.borderedProminent)
@@ -229,12 +229,12 @@ struct EventForm: View {
             let request = EventCreate(
                 tripId: tripId,
                 name: name,
-                note: note?.nonEmpty,
                 date: date,
-                location: location,
+                note: note?.nonEmpty,
+                location: try LocationResponse(from: location as! Decoder),
                 transitionFromPrevious: transitionFromPrevious?.nonEmpty
             )
-            try await journalService.createEvent(with: request)
+           let _ = await journalManager.createEvent(with: request)
             await MainActor.run {
                 updateHandler()
                 dismiss()
@@ -245,18 +245,18 @@ struct EventForm: View {
         isLoading = false
     }
 
-    private func editEvent(withId id: Event.ID) async {
+    private func editEvent(withId id: Int) async {
         isLoading = true
         do {
             try validateForm()
             let request = EventUpdate(
                 name: name,
-                note: note?.nonEmpty,
                 date: date,
-                location: location,
+                note: note?.nonEmpty,
+                location: try LocationResponse(from: location as! Decoder),
                 transitionFromPrevious: transitionFromPrevious?.nonEmpty
             )
-            try await journalService.updateEvent(withId: id, and: request)
+            let _ = await journalManager.updateEvent(withId: id, tripId: tripId, and: request)
             await MainActor.run {
                 updateHandler()
                 dismiss()
@@ -267,17 +267,16 @@ struct EventForm: View {
         isLoading = false
     }
 
-    private func deleteEvent(withId id: Event.ID) async {
+    private func deleteEvent(withId id: Int) async {
         isLoading = true
-        do {
-            try await journalService.deleteEvent(withId: id)
+        
+           await journalManager.deleteEvent(withId: id)
             await MainActor.run {
                 updateHandler()
                 dismiss()
-            }
-        } catch {
-            self.error = error
+          
         }
+        
         isLoading = false
     }
 }

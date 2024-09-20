@@ -27,8 +27,6 @@ protocol JournalService {
 //
 //    /// Log-outs the user, by deleting the token and updating the isAuthenticated publisher.
 //    func logOut()
-    
-    
 
     /// Creates a new trip.
     /// - Parameter request: Trip creation request.

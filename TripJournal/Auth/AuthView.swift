@@ -14,7 +14,8 @@ struct AuthView: View {
     @State private var isLoading = false
     @State private var error: Error?
 
-    @Environment(\.journalService) private var journalService
+    @EnvironmentObject var journalManager: JournalManager 
+
 
     // MARK: - Body
 
@@ -102,7 +103,7 @@ struct AuthView: View {
         isLoading = true
         do {
             try validateForm()
-            try await journalService.logIn(username: username, password: password)
+            await journalManager.logIn(username: username, password: password)
         } catch {
             self.error = error
         }
@@ -113,10 +114,16 @@ struct AuthView: View {
         isLoading = true
         do {
             try validateForm()
-            try await journalService.register(username: username, password: password)
+            await journalManager.register(username: username, password: password)
         } catch {
             self.error = error
         }
         isLoading = false
+    }
+}
+
+extension String {
+    var nonEmpty: String? {
+        return isEmpty ? nil : self
     }
 }
