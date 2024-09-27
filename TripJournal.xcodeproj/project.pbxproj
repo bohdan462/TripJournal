@@ -26,8 +26,6 @@
 		07AA89D72B5F251800405269 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07AA89D62B5F251800405269 /* Requests.swift */; };
 		07BCBA7A2B5B256500C6F687 /* MediaGallery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BCBA792B5B256500C6F687 /* MediaGallery.swift */; };
 		07BCBA872B5D656E00C6F687 /* JournalService+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BCBA862B5D656E00C6F687 /* JournalService+Mock.swift */; };
-		07BCBA892B5D65AD00C6F687 /* JournalService+Unimplemented.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BCBA882B5D65AD00C6F687 /* JournalService+Unimplemented.swift */; };
-		07BCBA8B2B5D65D200C6F687 /* JournalService+Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BCBA8A2B5D65D200C6F687 /* JournalService+Environment.swift */; };
 		07BCBA8F2B5D7EC500C6F687 /* MediaCarousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07BCBA8E2B5D7EC500C6F687 /* MediaCarousel.swift */; };
 		07F6695D2B589A1E002F8D18 /* AddButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F6695C2B589A1E002F8D18 /* AddButton.swift */; };
 		CA3C35942C9915BB00FA7648 /* JournalManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA3C35932C9915BB00FA7648 /* JournalManager.swift */; };
@@ -35,7 +33,6 @@
 		CA3C359C2C9A062100FA7648 /* JournalLocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA3C359B2C9A062100FA7648 /* JournalLocalService.swift */; };
 		CA81F2762C94BF72002485FD /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2752C94BF72002485FD /* NetworkMonitor.swift */; };
 		CA81F2782C94C14D002485FD /* TripRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2772C94C14D002485FD /* TripRouter.swift */; };
-		CA81F27A2C94CCC3002485FD /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2792C94CCC3002485FD /* Secrets.swift */; };
 		CA81F27C2C94D613002485FD /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F27B2C94D613002485FD /* KeychainHelper.swift */; };
 		CA81F2802C94EA94002485FD /* NetworkConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F27F2C94EA94002485FD /* NetworkConstants.swift */; };
 		CA81F2842C9502F9002485FD /* NetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA81F2832C9502F8002485FD /* NetworkClient.swift */; };
@@ -46,8 +43,26 @@
 		CAAC55632C96001100E034AF /* JournalServiceFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAAC55622C96001100E034AF /* JournalServiceFacade.swift */; };
 		CADE04352C9C9779004627C3 /* TripJournalContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04342C9C9779004627C3 /* TripJournalContainer.swift */; };
 		CADE043D2C9D2F68004627C3 /* TJSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE043C2C9D2F68004627C3 /* TJSyncController.swift */; };
-		CADE043F2C9DFBB0004627C3 /* ServiceFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE043E2C9DFBB0004627C3 /* ServiceFactory.swift */; };
 		CADE04422C9E0340004627C3 /* TripController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04412C9E0340004627C3 /* TripController.swift */; };
+		CADE044A2CA3AFE3004627C3 /* TripRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04492CA3AFE3004627C3 /* TripRepositoryImpl.swift */; };
+		CADE044C2CA3B00A004627C3 /* EventRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE044B2CA3B00A004627C3 /* EventRepositoryImpl.swift */; };
+		CADE044E2CA3B01F004627C3 /* MediaRepositoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE044D2CA3B01F004627C3 /* MediaRepositoryImpl.swift */; };
+		CADE04502CA3B034004627C3 /* TripRemoteDataSourceImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE044F2CA3B034004627C3 /* TripRemoteDataSourceImpl.swift */; };
+		CADE04522CA3B04A004627C3 /* TripLocalDataSourceImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04512CA3B04A004627C3 /* TripLocalDataSourceImpl.swift */; };
+		CADE04542CA3B05F004627C3 /* EventRemoteDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04532CA3B05F004627C3 /* EventRemoteDataSource.swift */; };
+		CADE04562CA3B0A7004627C3 /* EventLocalDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04552CA3B0A7004627C3 /* EventLocalDataSource.swift */; };
+		CADE04592CA3B4B3004627C3 /* GetTripsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04582CA3B4B3004627C3 /* GetTripsUseCase.swift */; };
+		CADE045F2CA476A5004627C3 /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE045E2CA476A4004627C3 /* ServiceLocator.swift */; };
+		CADE04612CA47A40004627C3 /* CreateTripUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04602CA47A40004627C3 /* CreateTripUseCase.swift */; };
+		CADE04632CA47A57004627C3 /* UpdateTripUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04622CA47A57004627C3 /* UpdateTripUseCase.swift */; };
+		CADE04652CA47A89004627C3 /* DeleteTripUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04642CA47A89004627C3 /* DeleteTripUseCase.swift */; };
+		CADE04682CA47AEC004627C3 /* TripViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04672CA47AEC004627C3 /* TripViewModel.swift */; };
+		CADE046B2CA4D28D004627C3 /* EventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE046A2CA4D28D004627C3 /* EventViewModel.swift */; };
+		CADE046F2CA4D2D6004627C3 /* GetEventsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE046E2CA4D2D6004627C3 /* GetEventsUseCase.swift */; };
+		CADE04712CA4D323004627C3 /* UpdateEventsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04702CA4D323004627C3 /* UpdateEventsUseCase.swift */; };
+		CADE04732CA4D358004627C3 /* DeleteEventsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04722CA4D358004627C3 /* DeleteEventsUseCase.swift */; };
+		CADE04752CA4D393004627C3 /* CreateEventsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04742CA4D393004627C3 /* CreateEventsUseCase.swift */; };
+		CADE04772CA500AC004627C3 /* GetTripUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADE04762CA500AC004627C3 /* GetTripUseCase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,16 +86,13 @@
 		07AA89D62B5F251800405269 /* Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requests.swift; sourceTree = "<group>"; };
 		07BCBA792B5B256500C6F687 /* MediaGallery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaGallery.swift; sourceTree = "<group>"; };
 		07BCBA862B5D656E00C6F687 /* JournalService+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalService+Mock.swift"; sourceTree = "<group>"; };
-		07BCBA882B5D65AD00C6F687 /* JournalService+Unimplemented.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalService+Unimplemented.swift"; sourceTree = "<group>"; };
-		07BCBA8A2B5D65D200C6F687 /* JournalService+Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JournalService+Environment.swift"; sourceTree = "<group>"; };
-		07BCBA8E2B5D7EC500C6F687 /* MediaCarousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCarousel.swift; sourceTree = "<group>"; };
+		07BCBA8E2B5D7EC500C6F687 /* MediaCarousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCarousel.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		07F6695C2B589A1E002F8D18 /* AddButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddButton.swift; sourceTree = "<group>"; };
 		CA3C35932C9915BB00FA7648 /* JournalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalManager.swift; sourceTree = "<group>"; };
 		CA3C35962C99F14500FA7648 /* FileManagerStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerStorage.swift; sourceTree = "<group>"; };
 		CA3C359B2C9A062100FA7648 /* JournalLocalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalLocalService.swift; sourceTree = "<group>"; };
 		CA81F2752C94BF72002485FD /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		CA81F2772C94C14D002485FD /* TripRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripRouter.swift; sourceTree = "<group>"; };
-		CA81F2792C94CCC3002485FD /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		CA81F27B2C94D613002485FD /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		CA81F27F2C94EA94002485FD /* NetworkConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConstants.swift; sourceTree = "<group>"; };
 		CA81F2832C9502F8002485FD /* NetworkClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClient.swift; sourceTree = "<group>"; };
@@ -91,8 +103,26 @@
 		CAAC55622C96001100E034AF /* JournalServiceFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalServiceFacade.swift; sourceTree = "<group>"; };
 		CADE04342C9C9779004627C3 /* TripJournalContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripJournalContainer.swift; sourceTree = "<group>"; };
 		CADE043C2C9D2F68004627C3 /* TJSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TJSyncController.swift; sourceTree = "<group>"; };
-		CADE043E2C9DFBB0004627C3 /* ServiceFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceFactory.swift; sourceTree = "<group>"; };
 		CADE04412C9E0340004627C3 /* TripController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripController.swift; sourceTree = "<group>"; };
+		CADE04492CA3AFE3004627C3 /* TripRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripRepositoryImpl.swift; sourceTree = "<group>"; };
+		CADE044B2CA3B00A004627C3 /* EventRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRepositoryImpl.swift; sourceTree = "<group>"; };
+		CADE044D2CA3B01F004627C3 /* MediaRepositoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaRepositoryImpl.swift; sourceTree = "<group>"; };
+		CADE044F2CA3B034004627C3 /* TripRemoteDataSourceImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripRemoteDataSourceImpl.swift; sourceTree = "<group>"; };
+		CADE04512CA3B04A004627C3 /* TripLocalDataSourceImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripLocalDataSourceImpl.swift; sourceTree = "<group>"; };
+		CADE04532CA3B05F004627C3 /* EventRemoteDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRemoteDataSource.swift; sourceTree = "<group>"; };
+		CADE04552CA3B0A7004627C3 /* EventLocalDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventLocalDataSource.swift; sourceTree = "<group>"; };
+		CADE04582CA3B4B3004627C3 /* GetTripsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTripsUseCase.swift; sourceTree = "<group>"; };
+		CADE045E2CA476A4004627C3 /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
+		CADE04602CA47A40004627C3 /* CreateTripUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTripUseCase.swift; sourceTree = "<group>"; };
+		CADE04622CA47A57004627C3 /* UpdateTripUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateTripUseCase.swift; sourceTree = "<group>"; };
+		CADE04642CA47A89004627C3 /* DeleteTripUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteTripUseCase.swift; sourceTree = "<group>"; };
+		CADE04672CA47AEC004627C3 /* TripViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripViewModel.swift; sourceTree = "<group>"; };
+		CADE046A2CA4D28D004627C3 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
+		CADE046E2CA4D2D6004627C3 /* GetEventsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetEventsUseCase.swift; sourceTree = "<group>"; };
+		CADE04702CA4D323004627C3 /* UpdateEventsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateEventsUseCase.swift; sourceTree = "<group>"; };
+		CADE04722CA4D358004627C3 /* DeleteEventsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteEventsUseCase.swift; sourceTree = "<group>"; };
+		CADE04742CA4D393004627C3 /* CreateEventsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventsUseCase.swift; sourceTree = "<group>"; };
+		CADE04762CA500AC004627C3 /* GetTripUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTripUseCase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,19 +155,15 @@
 		075A90E12B446996009A1DCB /* TripJournal */ = {
 			isa = PBXGroup;
 			children = (
-				07BCBA862B5D656E00C6F687 /* JournalService+Mock.swift */,
+				CADE04472CA37109004627C3 /* Core Services */,
+				CADE04462CA37101004627C3 /* Data Layer */,
+				CADE04452CA370F6004627C3 /* Domain Layer */,
+				CADE04442CA370E4004627C3 /* Presentation Layer */,
 				075A90E22B446996009A1DCB /* App.swift */,
 				075A90F02B4469C0009A1DCB /* RootView.swift */,
 				075A90E62B446997009A1DCB /* Assets.xcassets */,
-				07AA89D42B5F242B00405269 /* Auth */,
-				CA81F2742C94BF57002485FD /* Helpers */,
-				07BCBA8C2B5D65ED00C6F687 /* JournalService */,
-				07BCBA8D2B5D666E00C6F687 /* LocationPicker */,
-				07AA89D82B5F256800405269 /* Models */,
-				07AA89D22B5F241200405269 /* Trips */,
-				07AA89D52B5F243B00405269 /* Events */,
 				07AA89D32B5F242100405269 /* Utils */,
-				CADE04342C9C9779004627C3 /* TripJournalContainer.swift */,
+				07BCBA862B5D656E00C6F687 /* JournalService+Mock.swift */,
 			);
 			path = TripJournal;
 			sourceTree = "<group>";
@@ -181,13 +207,13 @@
 			path = Events;
 			sourceTree = "<group>";
 		};
-		07AA89D82B5F256800405269 /* Models */ = {
+		07AA89D82B5F256800405269 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
 				0703FC712B457EF40084DD8A /* Models.swift */,
 				07AA89D62B5F251800405269 /* Requests.swift */,
 			);
-			path = Models;
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		07BCBA8C2B5D65ED00C6F687 /* JournalService */ = {
@@ -195,9 +221,6 @@
 			children = (
 				CADE04402C9E0333004627C3 /* Controllers */,
 				CA3C35922C99158900FA7648 /* Manager */,
-				CA3C35952C99F12B00FA7648 /* Storage */,
-				CA81F2872C950C5E002485FD /* Service */,
-				CA81F2822C95025F002485FD /* Networking */,
 			);
 			path = JournalService;
 			sourceTree = "<group>";
@@ -217,7 +240,6 @@
 			children = (
 				CA3C35932C9915BB00FA7648 /* JournalManager.swift */,
 				CAAC55622C96001100E034AF /* JournalServiceFacade.swift */,
-				CA81F28A2C952696002485FD /* TokenManager.swift */,
 				CA3C35962C99F14500FA7648 /* FileManagerStorage.swift */,
 			);
 			path = Manager;
@@ -226,6 +248,7 @@
 		CA3C35952C99F12B00FA7648 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
+				CADE045D2CA47645004627C3 /* Container */,
 				CA3C359D2C9A19A900FA7648 /* Local Persistence Layer */,
 				CA81F2812C950234002485FD /* Cache Layer */,
 			);
@@ -240,16 +263,6 @@
 			path = "Local Persistence Layer";
 			sourceTree = "<group>";
 		};
-		CA81F2742C94BF57002485FD /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				CA81F2752C94BF72002485FD /* NetworkMonitor.swift */,
-				CA81F27B2C94D613002485FD /* KeychainHelper.swift */,
-				CADE043E2C9DFBB0004627C3 /* ServiceFactory.swift */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
 		CA81F2812C950234002485FD /* Cache Layer */ = {
 			isa = PBXGroup;
 			children = (
@@ -261,11 +274,9 @@
 		CA81F2822C95025F002485FD /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				CA81F28C2C9536D3002485FD /* AuthService.swift */,
-				CA81F2832C9502F8002485FD /* NetworkClient.swift */,
-				CA81F2772C94C14D002485FD /* TripRouter.swift */,
-				CA81F2792C94CCC3002485FD /* Secrets.swift */,
-				CA81F27F2C94EA94002485FD /* NetworkConstants.swift */,
+				CADE04692CA4869C004627C3 /* Client */,
+				CA81F2872C950C5E002485FD /* Service */,
+				CADE04482CA3AEAE004627C3 /* Authentication */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -274,8 +285,6 @@
 			isa = PBXGroup;
 			children = (
 				0703FC732B4583B80084DD8A /* JournalService.swift */,
-				07BCBA8A2B5D65D200C6F687 /* JournalService+Environment.swift */,
-				07BCBA882B5D65AD00C6F687 /* JournalService+Unimplemented.swift */,
 				CA81F2882C950C80002485FD /* JournalService+Live.swift */,
 			);
 			path = Service;
@@ -288,6 +297,154 @@
 				CADE04412C9E0340004627C3 /* TripController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		CADE04442CA370E4004627C3 /* Presentation Layer */ = {
+			isa = PBXGroup;
+			children = (
+				CADE047A2CA6657D004627C3 /* Views */,
+				CADE04662CA47ADA004627C3 /* View Models */,
+				07BCBA8D2B5D666E00C6F687 /* LocationPicker */,
+			);
+			path = "Presentation Layer";
+			sourceTree = "<group>";
+		};
+		CADE04452CA370F6004627C3 /* Domain Layer */ = {
+			isa = PBXGroup;
+			children = (
+				07BCBA8C2B5D65ED00C6F687 /* JournalService */,
+				CADE04572CA3B494004627C3 /* Use Cases */,
+				07AA89D82B5F256800405269 /* Entities */,
+				CADE045E2CA476A4004627C3 /* ServiceLocator.swift */,
+			);
+			path = "Domain Layer";
+			sourceTree = "<group>";
+		};
+		CADE04462CA37101004627C3 /* Data Layer */ = {
+			isa = PBXGroup;
+			children = (
+				CADE045A2CA475D4004627C3 /* Trip Repository */,
+				CADE045B2CA475EA004627C3 /* Event Repository */,
+				CADE045C2CA47603004627C3 /* Media Repository */,
+				CA3C35952C99F12B00FA7648 /* Storage */,
+				CA81F2752C94BF72002485FD /* NetworkMonitor.swift */,
+			);
+			path = "Data Layer";
+			sourceTree = "<group>";
+		};
+		CADE04472CA37109004627C3 /* Core Services */ = {
+			isa = PBXGroup;
+			children = (
+				CA81F2822C95025F002485FD /* Networking */,
+			);
+			path = "Core Services";
+			sourceTree = "<group>";
+		};
+		CADE04482CA3AEAE004627C3 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				CA81F28C2C9536D3002485FD /* AuthService.swift */,
+				CA81F28A2C952696002485FD /* TokenManager.swift */,
+				CA81F27B2C94D613002485FD /* KeychainHelper.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		CADE04572CA3B494004627C3 /* Use Cases */ = {
+			isa = PBXGroup;
+			children = (
+				CADE046D2CA4D2AA004627C3 /* Events */,
+				CADE046C2CA4D297004627C3 /* Trips */,
+			);
+			path = "Use Cases";
+			sourceTree = "<group>";
+		};
+		CADE045A2CA475D4004627C3 /* Trip Repository */ = {
+			isa = PBXGroup;
+			children = (
+				CADE04512CA3B04A004627C3 /* TripLocalDataSourceImpl.swift */,
+				CADE044F2CA3B034004627C3 /* TripRemoteDataSourceImpl.swift */,
+				CADE04492CA3AFE3004627C3 /* TripRepositoryImpl.swift */,
+			);
+			path = "Trip Repository";
+			sourceTree = "<group>";
+		};
+		CADE045B2CA475EA004627C3 /* Event Repository */ = {
+			isa = PBXGroup;
+			children = (
+				CADE044B2CA3B00A004627C3 /* EventRepositoryImpl.swift */,
+				CADE04532CA3B05F004627C3 /* EventRemoteDataSource.swift */,
+				CADE04552CA3B0A7004627C3 /* EventLocalDataSource.swift */,
+			);
+			path = "Event Repository";
+			sourceTree = "<group>";
+		};
+		CADE045C2CA47603004627C3 /* Media Repository */ = {
+			isa = PBXGroup;
+			children = (
+				CADE044D2CA3B01F004627C3 /* MediaRepositoryImpl.swift */,
+			);
+			path = "Media Repository";
+			sourceTree = "<group>";
+		};
+		CADE045D2CA47645004627C3 /* Container */ = {
+			isa = PBXGroup;
+			children = (
+				CADE04342C9C9779004627C3 /* TripJournalContainer.swift */,
+			);
+			path = Container;
+			sourceTree = "<group>";
+		};
+		CADE04662CA47ADA004627C3 /* View Models */ = {
+			isa = PBXGroup;
+			children = (
+				CADE04672CA47AEC004627C3 /* TripViewModel.swift */,
+				CADE046A2CA4D28D004627C3 /* EventViewModel.swift */,
+			);
+			path = "View Models";
+			sourceTree = "<group>";
+		};
+		CADE04692CA4869C004627C3 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				CA81F2832C9502F8002485FD /* NetworkClient.swift */,
+				CA81F2772C94C14D002485FD /* TripRouter.swift */,
+				CA81F27F2C94EA94002485FD /* NetworkConstants.swift */,
+			);
+			path = Client;
+			sourceTree = "<group>";
+		};
+		CADE046C2CA4D297004627C3 /* Trips */ = {
+			isa = PBXGroup;
+			children = (
+				CADE04582CA3B4B3004627C3 /* GetTripsUseCase.swift */,
+				CADE04602CA47A40004627C3 /* CreateTripUseCase.swift */,
+				CADE04622CA47A57004627C3 /* UpdateTripUseCase.swift */,
+				CADE04642CA47A89004627C3 /* DeleteTripUseCase.swift */,
+				CADE04762CA500AC004627C3 /* GetTripUseCase.swift */,
+			);
+			path = Trips;
+			sourceTree = "<group>";
+		};
+		CADE046D2CA4D2AA004627C3 /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				CADE046E2CA4D2D6004627C3 /* GetEventsUseCase.swift */,
+				CADE04702CA4D323004627C3 /* UpdateEventsUseCase.swift */,
+				CADE04722CA4D358004627C3 /* DeleteEventsUseCase.swift */,
+				CADE04742CA4D393004627C3 /* CreateEventsUseCase.swift */,
+			);
+			path = Events;
+			sourceTree = "<group>";
+		};
+		CADE047A2CA6657D004627C3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				07AA89D22B5F241200405269 /* Trips */,
+				07AA89D52B5F243B00405269 /* Events */,
+				07AA89D42B5F242B00405269 /* Auth */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -380,43 +537,58 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CADE04712CA4D323004627C3 /* UpdateEventsUseCase.swift in Sources */,
 				CADE043D2C9D2F68004627C3 /* TJSyncController.swift in Sources */,
 				07BCBA7A2B5B256500C6F687 /* MediaGallery.swift in Sources */,
+				CADE04772CA500AC004627C3 /* GetTripUseCase.swift in Sources */,
 				CA81F2892C950C80002485FD /* JournalService+Live.swift in Sources */,
 				0703FC7A2B493D5B0084DD8A /* LocationService.swift in Sources */,
 				0703FC722B457EF40084DD8A /* Models.swift in Sources */,
-				CADE043F2C9DFBB0004627C3 /* ServiceFactory.swift in Sources */,
 				075A91012B446B17009A1DCB /* AuthView.swift in Sources */,
 				CA81F2862C9507C7002485FD /* CacheServiceManager.swift in Sources */,
 				0703FC742B4583B80084DD8A /* JournalService.swift in Sources */,
 				07AA89D72B5F251800405269 /* Requests.swift in Sources */,
 				075A90E32B446996009A1DCB /* App.swift in Sources */,
 				CA81F28B2C952696002485FD /* TokenManager.swift in Sources */,
+				CADE04592CA3B4B3004627C3 /* GetTripsUseCase.swift in Sources */,
 				CA3C359C2C9A062100FA7648 /* JournalLocalService.swift in Sources */,
 				CADE04352C9C9779004627C3 /* TripJournalContainer.swift in Sources */,
 				075A90FD2B446AA9009A1DCB /* Utils.swift in Sources */,
+				CADE04752CA4D393004627C3 /* CreateEventsUseCase.swift in Sources */,
 				075A90FF2B446AD6009A1DCB /* EventForm.swift in Sources */,
 				0703FC782B49351F0084DD8A /* LocationPicker.swift in Sources */,
+				CADE04502CA3B034004627C3 /* TripRemoteDataSourceImpl.swift in Sources */,
 				CA81F2782C94C14D002485FD /* TripRouter.swift in Sources */,
+				CADE044C2CA3B00A004627C3 /* EventRepositoryImpl.swift in Sources */,
 				CADE04422C9E0340004627C3 /* TripController.swift in Sources */,
-				07BCBA892B5D65AD00C6F687 /* JournalService+Unimplemented.swift in Sources */,
+				CADE04652CA47A89004627C3 /* DeleteTripUseCase.swift in Sources */,
 				075A90F12B4469C0009A1DCB /* RootView.swift in Sources */,
 				CA3C35942C9915BB00FA7648 /* JournalManager.swift in Sources */,
+				CADE04632CA47A57004627C3 /* UpdateTripUseCase.swift in Sources */,
 				075A90F72B446A5C009A1DCB /* TripForm.swift in Sources */,
+				CADE04612CA47A40004627C3 /* CreateTripUseCase.swift in Sources */,
+				CADE044E2CA3B01F004627C3 /* MediaRepositoryImpl.swift in Sources */,
 				07BCBA872B5D656E00C6F687 /* JournalService+Mock.swift in Sources */,
 				0767E7102B573F6300993870 /* LocationSearchView.swift in Sources */,
-				CA81F27A2C94CCC3002485FD /* Secrets.swift in Sources */,
 				075A90FB2B446A80009A1DCB /* EventCell.swift in Sources */,
+				CADE04682CA47AEC004627C3 /* TripViewModel.swift in Sources */,
 				07BCBA8F2B5D7EC500C6F687 /* MediaCarousel.swift in Sources */,
 				07F6695D2B589A1E002F8D18 /* AddButton.swift in Sources */,
+				CADE04732CA4D358004627C3 /* DeleteEventsUseCase.swift in Sources */,
 				075A90F52B446A41009A1DCB /* TripDetails.swift in Sources */,
 				CA81F27C2C94D613002485FD /* KeychainHelper.swift in Sources */,
 				CA3C35972C99F14500FA7648 /* FileManagerStorage.swift in Sources */,
 				075A90F32B446A18009A1DCB /* TripList.swift in Sources */,
+				CADE045F2CA476A5004627C3 /* ServiceLocator.swift in Sources */,
+				CADE04542CA3B05F004627C3 /* EventRemoteDataSource.swift in Sources */,
 				CA81F28D2C9536D3002485FD /* AuthService.swift in Sources */,
 				CA81F2802C94EA94002485FD /* NetworkConstants.swift in Sources */,
+				CADE046B2CA4D28D004627C3 /* EventViewModel.swift in Sources */,
+				CADE046F2CA4D2D6004627C3 /* GetEventsUseCase.swift in Sources */,
+				CADE04522CA3B04A004627C3 /* TripLocalDataSourceImpl.swift in Sources */,
 				CAAC55632C96001100E034AF /* JournalServiceFacade.swift in Sources */,
-				07BCBA8B2B5D65D200C6F687 /* JournalService+Environment.swift in Sources */,
+				CADE04562CA3B0A7004627C3 /* EventLocalDataSource.swift in Sources */,
+				CADE044A2CA3AFE3004627C3 /* TripRepositoryImpl.swift in Sources */,
 				CA81F2842C9502F9002485FD /* NetworkClient.swift in Sources */,
 				075A90F92B446A6F009A1DCB /* TripCell.swift in Sources */,
 				CA81F2762C94BF72002485FD /* NetworkMonitor.swift in Sources */,
