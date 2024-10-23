@@ -9,38 +9,11 @@ import Foundation
 import Security
 import Combine
 
-enum KeychainError: LocalizedError {
-    case unableToSaveData
-    case unableToDeleteData
-    case unableToRetrieveData
-    case unableToDecodeData
-    case unableToUpdateData
-    case authenticationFailed
-    case interactionNotAllowed
-    
-    var errorDescription: String? {
-        switch self {
-        case .unableToSaveData:
-            return "Failed to save data to Keychain."
-        case .unableToDeleteData:
-            return "Failed to delete data from Keychain."
-        case .unableToRetrieveData:
-            return "Failed to retrieve data from Keychain."
-        case .authenticationFailed:
-            return "Authentication failed. Could not access the Keychain."
-        case .interactionNotAllowed:
-            return "Interaction with the Keychain is not allowed at this time."
-        case .unableToDecodeData:
-            return "Failed to decode data to Keychain."
-        case .unableToUpdateData:
-            return "Failed to update data to Keychain."
-        }
-    }
-}
-
+@objc
 protocol SecureStorage {
     func save(data: Data, forKey key: String) async throws
     func get(forKey key: String) async throws -> Data?
+    @objc optional func getURLPath(forKey key: String) -> URL
     func delete(forKey key: String) async throws
 }
 

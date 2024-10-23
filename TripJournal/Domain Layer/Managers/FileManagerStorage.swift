@@ -9,13 +9,17 @@ import Foundation
 
 class FileManagerStorage: SecureStorage {
     
+    static let shared = FileManagerStorage()
+    
     private func getDocumentsDirectory() -> URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
     
-    private func getFileURL(forKey key: String) -> URL {
-        return getDocumentsDirectory().appendingPathComponent("\(key).json")
+     func getFileURL(forKey key: String) -> URL {
+        return getDocumentsDirectory().appendingPathComponent("\(key).jpeg")
     }
+    
+    
     
     func save(data: Data, forKey key: String) async throws {
         try await Task(priority: .utility) { [weak self] in
@@ -26,6 +30,7 @@ class FileManagerStorage: SecureStorage {
             let fileURL = self.getFileURL(forKey: key)
             do {
                 try data.write(to: fileURL)
+               
                 print("Saved data for key \(key) at path: \(fileURL)")
             } catch {
                 print("Failed to save data for key \(key): \(error)")
@@ -53,6 +58,13 @@ class FileManagerStorage: SecureStorage {
                 throw error
             }
         }.value
+    }
+    
+    func getURLPath(forKey key: String) -> URL {
+        let fileURL = getFileURL(forKey: key)
+        let string = fileURL.absoluteString
+        let mediaPathName = string.split(separator: "/").last!
+        return URL(string: String(mediaPathName))!
     }
 
     // Delete data from the file system

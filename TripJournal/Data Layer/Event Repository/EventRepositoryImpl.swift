@@ -7,17 +7,10 @@
 
 import Foundation
 
-enum EventRepositoryError: Error {
-    case parentTripNotAvailable
-    case eventNotFound
-    case parentTripNotSynced
-    // Add other error cases as needed
-}
-
 protocol EventRepository {
-    func createEvent(_ event: Event, fromTrip: Trip) async throws
+    func createEvent(_ event: Event) async throws -> Event
     func getEvent(withId eventId: Event.ID) async throws -> Event?
-    func updateEvent(_ event: Event, inTrip: Trip) async throws
+    func updateEvent(_ event: Event) async throws -> Event
     func deleteEvent(_ event: Event) async throws
 }
 
@@ -36,135 +29,195 @@ class EventRepositoryImpl: EventRepository {
     }
     
     // MARK: - Create Event
-    func createEvent(_ event: Event, fromTrip: Trip) async throws {
-        // Save the event locally first
-        await localDataSource.saveEvent(event)
-        
+    func createEvent(_ event: Event) async throws -> Event {
+        guard event.trip != nil else { throw EventRepositoryError.parentTripNotAvailable}
+        let passedEvent = event
         if NetworkMonitor.shared.isConnected {
             guard let tripId = event.tripID else {
                 throw EventRepositoryError.parentTripNotSynced
             }
             
-            // Prepare EventCreate request
-            let request = EventCreate(
-                tripId: tripId,
-                name: event.name,
-                date: event.date,
-                note: event.note,
-                location: event.location != nil ? LocationResponse(
-                    latitude: event.location!.latitude,
-                    longitude: event.location!.longitude,
-                    address: event.location!.address
-                ) : nil,
-                transitionFromPrevious: event.transitionFromPrevious
-            )
-            
-            // Create event on the server
-            let createdEventResponse = try await remoteDataSource.createEvent(with: request)
-            
-            // Update local event with response data
-            event.eventId = createdEventResponse.eventId
-            event.isSynced = true
-            await localDataSource.updateEvent(event)
+            do {
+                // Prepare EventCreate request
+                let request = EventCreate(
+                    tripId: tripId,
+                    name: passedEvent.name,
+                    date: passedEvent.date,
+                    note: passedEvent.note,
+                    location: passedEvent.location != nil ? LocationResponse(
+                        latitude: passedEvent.location!.latitude,
+                        longitude: passedEvent.location!.longitude,
+                        address: passedEvent.location!.address
+                    ) : nil,
+                    transitionFromPrevious: passedEvent.transitionFromPrevious
+                )
+                
+                // Create event on the server
+                let createdEventResponse = try await remoteDataSource.createEvent(with: request)
+                
+                
+//                createdEventResponse.tripID = tripId
+//                createdEventResponse.trip = event.trip
+                guard let eventId = createdEventResponse.eventId else {
+                    throw EventRepositoryError.serverSideIdNotFound
+                }
+                
+                passedEvent.eventId = createdEventResponse.eventId
+                
+                if createdEventResponse.name != passedEvent.name {
+                    passedEvent.name = createdEventResponse.name
+                }
+                
+                if createdEventResponse.note != passedEvent.note {
+                    passedEvent.note = createdEventResponse.note
+                }
+                
+                if createdEventResponse.transitionFromPrevious != passedEvent.transitionFromPrevious {
+                    passedEvent.note = createdEventResponse.transitionFromPrevious
+                }
+                
+                if createdEventResponse.date != passedEvent.date {
+                    passedEvent.date = createdEventResponse.date
+                }
+                
+                if let location = createdEventResponse.location {
+                    if passedEvent.location == nil {
+                        let latitude = location.latitude
+                        let longitude = location.longitude
+                        let address = location.address
+                        passedEvent.location?.latitude = latitude
+                        passedEvent.location?.longitude = longitude
+                        passedEvent.location?.address = address
+                    }
+                }
+                
+                
+                if !createdEventResponse.medias.isEmpty {
+                    createdEventResponse.medias.forEach {  passedEvent.medias.append($0)
+                    }
+                }
+                passedEvent.isSynced = createdEventResponse.isSynced
+                return passedEvent
+            } catch {
+                throw RemoteDataSourceError.networkError(error)
+            }
         } else {
-            // Mark event as needing synchronization
-            event.isSynced = false
-            await localDataSource.updateEvent(event)
+            return passedEvent
         }
     }
-
+    
     
     
     // MARK: - Get Event
     func getEvent(withId eventId: Event.ID) async throws -> Event? {
         // Fetch the event from the local data source
-        if let localEvent = await localDataSource.getEvent(withId: eventId) {
-            if NetworkMonitor.shared.isConnected, let remoteEventId = localEvent.eventId {
-                // Fetch the event from the remote server
-                if let remoteEvent = try await remoteDataSource.getEvent(withId: remoteEventId) {
-                    
-                    // Update local event properties, but keep the trip relationship
-                    localEvent.name = remoteEvent.name
-                    localEvent.date = remoteEvent.date
-                    localEvent.note = remoteEvent.note
-                    localEvent.location = remoteEvent.location
-                    localEvent.transitionFromPrevious = remoteEvent.transitionFromPrevious
-                    localEvent.isSynced = true
-                    
-                    await localDataSource.updateEvent(localEvent)
+        do {
+            guard let localEvent = try await localDataSource.getEvent(withId: eventId) else { return nil }
+                if NetworkMonitor.shared.isConnected, let remoteEventId = localEvent.eventId {
+                    // Fetch the event from the remote server
+                    if let remoteEvent = try await remoteDataSource.getEvent(withId: remoteEventId) {
+                        return remoteEvent
+                    }
                 }
-            }
-            return localEvent
-        } else {
-            return nil
+        } catch {
+            throw DataSourceError.noData(error)
         }
+        return nil
     }
-
+    
     
     // MARK: - Update Event
-    func updateEvent(_ event: Event, inTrip: Trip) async throws {
-        // Update the event locally
-        await localDataSource.updateEvent(event)
-        
+    func updateEvent(_ event: Event) async throws -> Event {
+        var passedEvent = event
         if NetworkMonitor.shared.isConnected {
-            if let remoteEventId = event.eventId {
-                // Prepare EventUpdate request
+            if let remoteEventId = passedEvent.eventId {
+                
                 let request = EventUpdate(
-                    name: event.name,
-                    date: event.date,
-                    note: event.note,
-                    location: event.location != nil ? LocationResponse(
-                        latitude: event.location!.latitude,
-                        longitude: event.location!.longitude,
-                        address: event.location!.address
+                    name: passedEvent.name,
+                    date: passedEvent.date,
+                    note: passedEvent.note,
+                    location: passedEvent.location != nil ? LocationResponse(
+                        latitude: passedEvent.location!.latitude,
+                        longitude: passedEvent.location!.longitude,
+                        address: passedEvent.location!.address
                     ) : nil,
-                    transitionFromPrevious: event.transitionFromPrevious
+                    transitionFromPrevious: passedEvent.transitionFromPrevious
                 )
                 
-                // Update event on the server
                 let updatedEventResponse = try await remoteDataSource.updateEvent(withId: remoteEventId, and: request)
+                if updatedEventResponse.name != passedEvent.name {
+                    passedEvent.name = updatedEventResponse.name
+                }
+                if updatedEventResponse.date != passedEvent.date {
+                    passedEvent.date = updatedEventResponse.date
+                }
+                if updatedEventResponse.note != passedEvent.note {
+                    passedEvent.note = updatedEventResponse.note
+                }
                 
-                // Update local event with response data
-                event.name = updatedEventResponse.name
-                event.date = updatedEventResponse.date
-                event.note = updatedEventResponse.note
-                event.location = updatedEventResponse.location != nil ? Location(
-                    latitude: updatedEventResponse.location!.latitude,
-                    longitude: updatedEventResponse.location!.longitude,
-                    address: updatedEventResponse.location!.address
-                ) : nil
-                event.transitionFromPrevious = updatedEventResponse.transitionFromPrevious
-                event.isSynced = true
-                await localDataSource.updateEvent(event)
+                if let location = updatedEventResponse.location {
+                    if passedEvent.location == nil {
+                        let latitude = location.latitude
+                        let longitude = location.longitude
+                        let address = location.address
+                        passedEvent.location?.latitude = latitude
+                        passedEvent.location?.longitude = longitude
+                        passedEvent.location?.address = address
+                    }
+                }
+                if updatedEventResponse.transitionFromPrevious != passedEvent.transitionFromPrevious {
+                    passedEvent.transitionFromPrevious = updatedEventResponse.transitionFromPrevious
+                }
+                
+                if !updatedEventResponse.medias.isEmpty {
+                    let existingMediaURLs = passedEvent.medias.map { $0.url }
+                  
+                    updatedEventResponse.medias.forEach { media in
+                        if !existingMediaURLs.contains(media.url) {
+                            passedEvent.medias.append(media)
+                        }
+                    }
+                    
+                    updatedEventResponse.medias.forEach {  passedEvent.medias.append($0)
+                    }
+                }
+                
+                passedEvent.isSynced = true
+            
             } else {
-                // Handle case where event doesn't have a remote ID
-                // Possibly create the event on the server
+              return try await createEvent(passedEvent)
+                
             }
         } else {
-            // Mark event as needing synchronization
-            event.isSynced = false
-            await localDataSource.updateEvent(event)
+            
+            passedEvent.isSynced = false
+            
         }
+        return passedEvent
+        
     }
-
+    
     
     
     // MARK: - Delete Event
     
     func deleteEvent(_ event: Event) async throws {
-        // Delete the event locally
-        await localDataSource.deleteEvent(withId: event.id)
-        
         if NetworkMonitor.shared.isConnected {
+            
             if let remoteEventId = event.eventId {
-                // Delete event on the server
-                try await remoteDataSource.deleteEvent(withId: remoteEventId)
+                do {
+                    try await remoteDataSource.deleteEvent(withId: remoteEventId)
+                } catch {
+                    throw RemoteDataSourceError.networkError(error)
+                }
             }
         } else {
-            // Mark event as needing synchronization
             event.isDeleted = true
             event.isSynced = false
-            await localDataSource.updateEvent(event)
         }
+    }
+    
+    func deleteAllEvents(in trip: Trip) async throws {
+        trip.events = []
     }
 }

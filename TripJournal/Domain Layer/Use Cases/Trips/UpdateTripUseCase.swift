@@ -8,7 +8,7 @@
 import Foundation
 
 protocol UpdateTripUseCase {
-    func execute(_ trip: Trip) async throws -> Trip
+    func execute(_ trip: Trip) async throws
 }
 
 class UpdateTripUseCaseImpl: UpdateTripUseCase {
@@ -18,7 +18,7 @@ class UpdateTripUseCaseImpl: UpdateTripUseCase {
         self.tripRepository = tripRepository
     }
 
-    func execute(_ trip: Trip) async throws -> Trip {
-        return try await tripRepository.updateTrip(trip, withId: trip.id)
+    func execute(_ trip: Trip) async throws {
+        return try await tripRepository.updateTrip(trip)
     }
 }

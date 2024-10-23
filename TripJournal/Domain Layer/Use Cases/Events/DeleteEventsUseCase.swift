@@ -8,22 +8,19 @@
 import Foundation
 
 protocol DeleteEventsUseCase {
-    func execute(eventId: Event.ID, fromTrip trip: Trip) async throws
+    func execute(_ event: Event) async throws
     
 }
 
 class DeleteEventsUseCaseImpl: DeleteEventsUseCase {
-    private let tripRepository: TripRepository
+    private let eventRepository: EventRepository
     
-    init(tripRepository: TripRepository) {
-        self.tripRepository = tripRepository
+    init( eventRepository: EventRepository) {
+        self.eventRepository = eventRepository
     }
     
-    func execute(eventId: Event.ID, fromTrip trip: Trip) async throws {
-        var updatedTrip = trip
-        updatedTrip.events.removeAll { $0.id == eventId }
+    func execute(_ event: Event) async throws {
+        try await eventRepository.deleteEvent(event)
         
-        // Update the trip after removing the event
-        try await tripRepository.updateTrip(updatedTrip, withId: updatedTrip.id)
     }
 }

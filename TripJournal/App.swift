@@ -16,9 +16,7 @@ struct TripJournalApp: App {
 
         self.container = TripJournalContainer.create()
         self.serviceLocator = ServiceLocator(context: container.mainContext)
-
-        print("------------------Finished Initializing the app-------------------")
-//        print(URL.applicationSupportDirectory.path(percentEncoded: false))
+        print(URL.applicationSupportDirectory.path(percentEncoded: false))
     }
     
     var body: some Scene {
@@ -27,7 +25,6 @@ struct TripJournalApp: App {
                 .environmentObject(serviceLocator.makeJournalAuthManager())
                 .environmentObject(serviceLocator.getNetworkMonitor())
                 .environmentObject(serviceLocator.getTripViewModel())
-                .environmentObject(serviceLocator.getEventViewModel())
                 .environmentObject(serviceLocator.getAuthService())
                 .modelContainer(container)
         }

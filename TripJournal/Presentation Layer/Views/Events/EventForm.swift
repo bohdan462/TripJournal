@@ -23,10 +23,11 @@ struct EventForm: View {
     }
     
     // MARK: - Properties
-    
-    let tripId: Trip.ID
     let mode: Mode
-    @ObservedObject var viewModel: TripViewModel
+    let trip: Trip
+//    private let updateHandler: () -> Void
+    
+    
     private let title: String
     
     @State private var name: String = ""
@@ -38,18 +39,22 @@ struct EventForm: View {
     @State private var error: Error?
     @State private var isLocationPickerPresented = false
     
+    @ObservedObject var viewModel: EventViewModel
+    
     @Environment(\.dismiss) private var dismiss
     
     // MARK: - Initializer
     
     init(
-        tripId: Trip.ID,
         mode: Mode,
-        viewModel: TripViewModel
+        viewModel: EventViewModel,
+        trip: Trip
+//        updateHandler: @escaping () -> Void
     ) {
-        self.tripId = tripId
         self.mode = mode
         self.viewModel = viewModel
+        self.trip = trip
+//        self.updateHandler = updateHandler
         
         switch mode {
         case .add:
@@ -61,6 +66,10 @@ struct EventForm: View {
             _date = .init(initialValue: event.date)
             _location = .init(initialValue: event.location)
             _transitionFromPrevious = .init(initialValue: event.transitionFromPrevious ?? "")
+           
+            print("\nEVENT_FFORM_EVENT EDIT MODE--------------------------\n")
+            print("Event: \(event.name), date: \(event.date), note: \(event.note), lat: \(event.location?.latitude), long: \(event.location?.longitude), address: \(event.location?.address), transition: \(event.transitionFromPrevious) tripID: \(event.tripID), tripName: \(event.trip?.name), eventIDremote:\(event.eventId), localID:\(event.id), synced: \(event.isSynced)")
+           
         }
     }
     
@@ -85,8 +94,12 @@ struct EventForm: View {
                 }
                 .loadingOverlay(isLoading)
                 .sheet(isPresented: $isLocationPickerPresented) {
+                    
                     LocationPicker(location: location) { selectedLocation in
+                        print("\nPASSING_LOCATION_TO_PICKER: \nlong: \(location?.longitude)\n lat: \(location?.latitude)\n")
+                        print("\nSELECTED_LOCATION: \nlong: \(selectedLocation.longitude)\n lat: \(selectedLocation.latitude)\n")
                         location = selectedLocation
+                       
                     }
                 }
                 .interactiveDismissDisabled()
@@ -141,7 +154,9 @@ struct EventForm: View {
                 Button(
                     action: { isLocationPickerPresented = true },
                     label: {
-                        map(location: location)
+                      
+                            map(location: location)
+                        
                     }
                 )
                 .buttonStyle(.plain)
@@ -227,10 +242,7 @@ struct EventForm: View {
     private func saveEvent() async {
         do {
             try validateForm()
-            guard let trip = viewModel.trip(withId: tripId) else {
-                throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Trip not found."])
-            }
-
+//             let trip = $viewModel.trip
             switch mode {
             case .add:
                 let newEvent = Event(
@@ -245,7 +257,9 @@ struct EventForm: View {
                     isSynced: false
                 )
                
-                await viewModel.addEvent(newEvent, fromTrip: trip)
+                await viewModel.addEvent(newEvent)
+                print("\nEVENT_FORM-----UI:--------------NEW EVENT-------\n")
+                print("Event: \(newEvent.name), date: \(newEvent.date), note: \(newEvent.note), lat: \(newEvent.location?.latitude), long: \(newEvent.location?.longitude), address: \(newEvent.location?.address), tripID: \(newEvent.tripID), tripName: \(newEvent.trip?.name), eventIDremote:\(newEvent.eventId), localID:\(newEvent.id), synced: \(newEvent.isSynced)")
                 
             case let .edit(event):
                 var updatedEvent = event
@@ -254,13 +268,15 @@ struct EventForm: View {
                 updatedEvent.date = date
                 updatedEvent.location = location
                 updatedEvent.transitionFromPrevious = transitionFromPrevious.isEmpty ? nil : transitionFromPrevious
-                await viewModel.updateEvent(updatedEvent, inTrip: trip)
+                await viewModel.updateEvent(updatedEvent)
             }
             
             // Use MainActor to ensure the dismissal happens on the main thread
             await MainActor.run {
                 dismiss()
             }
+            
+            print("\n -----VIEW----- EDIT MODE---- Event Saved: \(name), \(date), belongs to trip: \(trip.tripId), trip:\(trip)\n long: \(location?.longitude) lat: \(location?.latitude)\n")
             
         } catch {
             // Update the error on the main thread
@@ -273,11 +289,8 @@ struct EventForm: View {
     
     private func deleteEvent() async {
         do {
-            guard let trip = viewModel.trip(withId: tripId) else {
-                throw NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: "Trip not found."])
-            }
             if case let .edit(event) = mode {
-                await viewModel.deleteEvent(withId: event.id, fromTrip: trip)
+                await viewModel.deleteEvent(event)
                 dismiss()
             }
         } catch {

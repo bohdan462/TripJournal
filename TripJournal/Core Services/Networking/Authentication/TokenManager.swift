@@ -8,11 +8,6 @@
 import Foundation
 import Combine
 
-enum TokenError: Error {
-    case noRefreshHandler
-    case authenticationServiceDeallocated
-}
-
 enum TokenState {
     case idle
     case fetching

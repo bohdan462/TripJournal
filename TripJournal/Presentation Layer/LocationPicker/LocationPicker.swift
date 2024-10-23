@@ -60,18 +60,22 @@ struct LocationPicker: View {
                 if let selectedItem {
                     Task {
                         scene = try? await fetchScene(for: selectedItem.placemark.coordinate)
+                        
                     }
+                    print("SELECTED_ITEM: \(selectedItem.debugDescription)")
                 }
                 isSheetPresented = selectedItem == nil
             }
             .onChange(of: items) {
                 if let firstItem = items.first, items.count == 1 {
                     selectedItem = firstItem
+                    print("FIRST_ITEM: \(firstItem.debugDescription)")
                 }
             }
             .task {
                 if let coordinate = selectedItem?.placemark.coordinate {
                     scene = try? await fetchScene(for: coordinate)
+                    print("COORDINATE: \(coordinate.latitude), \(coordinate.longitude)")
                 }
             }
             .sheet(isPresented: $isSheetPresented) {
@@ -94,11 +98,13 @@ struct LocationPicker: View {
         Button(
             action: {
                 let coordinate = item.placemark.coordinate
+                print("Coordinate: \nlat: \(coordinate.latitude), \nlon: \(coordinate.longitude)")
                 let location = Location(
                     latitude: coordinate.latitude,
                     longitude: coordinate.longitude,
                     address: item.name
                 )
+                print("Location lat: \(location.latitude), lon: \(location.longitude), address: \(location.address)")
                 selectionHandler(location)
                 dismiss()
             },

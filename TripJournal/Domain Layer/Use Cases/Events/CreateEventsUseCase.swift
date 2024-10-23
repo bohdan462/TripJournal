@@ -8,7 +8,7 @@
 import Foundation
 
 protocol CreateEventsUseCase {
-    func execute(event: Event, trip: Trip) async throws
+    func execute(event: Event) async throws
 }
 
 class CreateEventsUseCaseImpl: CreateEventsUseCase {
@@ -20,23 +20,23 @@ class CreateEventsUseCaseImpl: CreateEventsUseCase {
         self.eventRepository = eventRepository
     }
     
- @MainActor
-    func execute(event: Event, trip: Trip) async throws {
-        let updatedTrip = trip
+    @MainActor
+    func execute(event: Event) async throws {
         
-        try await eventRepository.createEvent(event, fromTrip: trip)
+        print("\nCreateEventsUseCase--------------------------\n")
+        print("Event: \(event.name), date: \(event.date), note: \(event.note), lat: \(event.location?.latitude), long: \(event.location?.longitude), address: \(event.location?.address), tripID: \(event.tripID), tripName: \(event.trip?.name), eventIDremote:\(event.eventId), localID:\(event.id), synced: \(event.isSynced)")
         
-        if let updatedEvent = try await eventRepository.getEvent(withId: event.id) {
-            await MainActor.run {
-                updatedTrip.events.append(updatedEvent)
-                // Notify the tripRepository to save the updated trip
-            }
-            
-            try await tripRepository.updateTrip(updatedTrip, withId: updatedTrip.id)
-            
-        } else {
-            print("Cannot create event")
+        let newEvent = try await eventRepository.createEvent(event)
+        guard let updatedTrip = newEvent.trip else {
+            fatalError("New event must have a trip")
         }
+        
+
+        print("\nCreateEventsUseCase--------------NEW EVENT FROM SERVER-------\n")
+        print("Event: \(newEvent.name), date: \(newEvent.date), note: \(newEvent.note), lat: \(newEvent.location?.latitude), long: \(newEvent.location?.longitude), address: \(newEvent.location?.address), tripID: \(newEvent.tripID), tripName: \(newEvent.trip?.name), eventIDremote:\(newEvent.eventId), localID:\(newEvent.id), synced: \(newEvent.isSynced)")
+
+        updatedTrip.events.append(newEvent)
+        try await tripRepository.updateTrip(updatedTrip)
     }
 
 }

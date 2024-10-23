@@ -51,3 +51,22 @@ extension Collection {
         return isEmpty ? nil : self
     }
 }
+
+extension Date {
+    func toString() -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter.string(from: self)
+    }
+}
+
+extension String {
+    func toDate() -> Date {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        guard let date = formatter.date(from: self) else {
+            fatalError("Date is invalid: \(self)")
+        }
+        return date
+    }
+}

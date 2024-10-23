@@ -8,28 +8,18 @@
 import Foundation
 
 protocol UpdateEventsUseCase {
-    func execute(event: Event, inTrip: Trip) async throws
+    func execute(event: Event) async throws
 }
 
 class UpdateEventsUseCaseImpl: UpdateEventsUseCase {
     
-    private let tripRepository: TripRepository
     private let eventRepository: EventRepository
 
-        init(tripRepository: TripRepository, eventRepository: EventRepository) {
-            self.tripRepository = tripRepository
+        init( eventRepository: EventRepository) {
             self.eventRepository = eventRepository
         }
     
-    func execute(event: Event, inTrip: Trip) async throws {
-//        var updatedTrip = trip
-        
-//        if let index = updatedTrip.events.firstIndex(where: { $0.id == event.id }) {
-//            updatedTrip.events[index] = event
-//        }
-        try await eventRepository.updateEvent(event, inTrip: inTrip)
-        
-//        try await tripRepository.updateTrip(trip, withId: trip.id)
-       
+    func execute(event: Event) async throws {
+        try await eventRepository.updateEvent(event)
     }
 }

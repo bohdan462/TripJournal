@@ -21,132 +21,80 @@ class TripRemoteDataSourceImpl: TripRemoteDataSource {
     // Dependencies
     private let networking: NetworkClient
     private let tokenManager: TokenManager
-
+    
     // Initializer
     init(networking: NetworkClient, tokenManager: TokenManager) {
         self.networking = networking
         self.tokenManager = tokenManager
     }
-//TODO: - Consider adding a timestamp check to avoid fetching remote trips every time the network is available. For example, only fetch trips if they haven't been synced in the last X minutes.
-    // Methods
+    //TODO: - Consider adding a timestamp check to avoid fetching remote trips every time the network is available. For example, only fetch trips if they haven't been synced in the last X minutes.
+    
     func getTrips() async throws -> [Trip] {
-        guard let token = try await tokenManager.getToken() else {
-            throw NetworkError.invalidValue
+        let config = try await fetchConfig(additionalHeaders:
+                                            [HTTPHeaders.accept.rawValue: MIMEType.JSON.rawValue])
+        do {
+            let tripsResponse = try await networking.request(
+                .trips,
+                responseType: [TripResponse].self,
+                method: .GET,
+                config: config
+            )
+            
+            let trips = tripsResponse.map { Trip(from: $0) }
+            return trips
+        } catch {
+            throw RemoteDataSourceError.networkError(error)
         }
-        let config = CustomRequestConfigurable(
-            headers: [
-                HTTPHeaders.authorization.rawValue: "Bearer \(token.accessToken)",
-                HTTPHeaders.accept.rawValue: MIMEType.JSON.rawValue
-            ]
-        )
-        
-        // Send the request and return the trips
-        let tripsResponse = try await networking.request(
-            .trips,
-            responseType: [TripResponse].self,
-            method: .GET,
-            config: config
-        )
-        
-        let trips = tripsResponse.map {
-            Trip(from: $0)
-        }
-        
-        return trips
     }
-
+    
     func createTrip(_ request: TripCreate) async throws -> Trip {
-        guard let token = try await tokenManager.getToken() else {
-            throw NetworkError.invalidValue
-        }
+        let config = try await fetchConfig(withBody:
+                                            try tripData(from: request),
+                                           additionalHeaders:
+                                            [HTTPHeaders.accept.rawValue: MIMEType.JSON.rawValue,
+                                             HTTPHeaders.contentType.rawValue: MIMEType.JSON.rawValue])
 
-        // Prepare trip data for the request
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [.withInternetDateTime]
-        
-        let tripData: [String: Any] = [
-            "name": request.name,
-            "start_date": dateFormatter.string(from: request.startDate),
-            "end_date": dateFormatter.string(from: request.endDate)
-        ]
-        
-        let jsonData = try JSONSerialization.data(withJSONObject: tripData)
-        
-        // Configure the request
-        let config = CustomRequestConfigurable(
-            headers: [
-                HTTPHeaders.authorization.rawValue: "Bearer \(token.accessToken)",
-                HTTPHeaders.accept.rawValue: MIMEType.JSON.rawValue,
-                HTTPHeaders.contentType.rawValue: MIMEType.JSON.rawValue
-            ],
-            body: jsonData
-        )
-        
-        // Send the request and return the created trip
-        let tripResponse = try await networking.request(
-            .trips,
-            responseType: TripResponse.self,
-            method: .POST,
-            config: config
-        )
-        
-        // Map TripResponse to Trip
-        let trip = Trip(from: tripResponse)
+        do {
+            let tripResponse = try await networking.request(
+                .trips,
+                responseType: TripResponse.self,
+                method: .POST,
+                config: config
+            )
+            
+            let trip = Trip(from: tripResponse)
             return trip
+        } catch {
+            throw RemoteDataSourceError.networkError(error)
+        }
     }
     
     func getTrip(withId tripId: Int) async throws -> Trip {
-        guard let token = try await tokenManager.getToken() else {
-            throw NetworkError.invalidValue
-        }
-
-        // Configure the request
-        let config = CustomRequestConfigurable(
-            headers: [
-                HTTPHeaders.authorization.rawValue: "Bearer \(token.accessToken)"
-            ]
-        )
-
-        // Send the request and return the trip
-        let tripResponse = try await networking.request(
-            .handleTrips(tripId.description),
-            responseType: TripResponse.self,
-            method: .GET,
-            config: config
-        )
+        let config = try await fetchConfig()
         
-        let trip = Trip(from: tripResponse)
-        return trip
+        do {
+            let tripResponse = try await networking.request(
+                .handleTrips(tripId.description),
+                responseType: TripResponse.self,
+                method: .GET,
+                config: config
+            )
+            
+            let trip = Trip(from: tripResponse)
+            return trip
+        } catch {
+            throw RemoteDataSourceError.networkError(error)
+        }
     }
     
     func updateTrip(withId tripId: Int, and request: TripUpdate) async throws -> Trip {
-        guard let token = try await tokenManager.getToken() else {
-            throw NetworkError.invalidValue
-        }
-
-        // Prepare updated trip data
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [.withInternetDateTime]
+        let config = try await fetchConfig(withBody:
+                                            try tripData(from: request),
+                                           additionalHeaders:
+                                            [HTTPHeaders.accept.rawValue: MIMEType.JSON.rawValue,
+                                             HTTPHeaders.contentType.rawValue: MIMEType.JSON.rawValue])
         
-        let tripData: [String: Any] = [
-            "name": request.name,
-            "start_date": dateFormatter.string(from: request.startDate),
-            "end_date": dateFormatter.string(from: request.endDate)
-        ]
         
-        let jsonData = try JSONSerialization.data(withJSONObject: tripData)
-        
-        // Configure the request
-        let config = CustomRequestConfigurable(
-            headers: [
-                HTTPHeaders.authorization.rawValue: "Bearer \(token.accessToken)",
-                HTTPHeaders.accept.rawValue: MIMEType.JSON.rawValue,
-                HTTPHeaders.contentType.rawValue: MIMEType.JSON.rawValue
-            ],
-            body: jsonData
-        )
-        
-        // Send the request and return the updated trip
         let tripResponse = try await networking.request(
             .handleTrips(tripId.description),
             responseType: TripResponse.self,
@@ -159,21 +107,68 @@ class TripRemoteDataSourceImpl: TripRemoteDataSource {
     }
     
     func deleteTrip(withId tripId: Int) async throws {
-        guard let token = try await tokenManager.getToken() else {
-            throw NetworkError.invalidValue
-        }
-
-        let config = CustomRequestConfigurable(
-            headers: [
-                HTTPHeaders.authorization.rawValue: "Bearer \(token.accessToken)"
-            ]
-        )
+        let config = try await fetchConfig()
         
-        try await networking.request(
-            .handleTrips(tripId.description),
-            method: .DELETE,
-            config: config
-        )
+        do {
+            try await networking.request(
+                .handleTrips(tripId.description),
+                method: .DELETE,
+                config: config
+            )
+        } catch {
+            throw RemoteDataSourceError.networkError(error)
+        }
     }
     
+    // MARK: - Helper Methods
+    private func fetchConfig(
+        withBody body: Data? = nil,
+        additionalHeaders: [String: String]? = nil
+    ) async throws -> RequestConfigurable {
+        guard let token = try await tokenManager.getToken() else {
+            throw RemoteDataSourceError.invalidToken
+        }
+
+        let baseHeaders: [String: String] = [
+            HTTPHeaders.authorization.rawValue: "Bearer \(token.accessToken)"
+        ]
+
+        var config: RequestConfigurable = CustomRequestConfigurable(headers: baseHeaders, body: body)
+
+        if let extraHeaders = additionalHeaders {
+            config = config.withAdditionalHeaders(extraHeaders)
+        }
+        
+        return config
+    }
+    
+    
+    private func tripData(from request: TripCreate) throws -> Data {
+        let tripData: [String: Any] = [
+            "name": request.name,
+            "start_date": request.startDate,
+            "end_date": request.endDate
+        ]
+        do {
+            let data = try JSONSerialization.data(withJSONObject: tripData)
+            return data
+        } catch {
+            throw RemoteDataSourceError.decodingError(error)
+        }
+    }
+    
+    private func tripData(from request: TripUpdate) throws -> Data {
+        let tripData: [String: Any] = [
+            "name": request.name,
+            "start_date": request.startDate,
+            "end_date": request.endDate
+        ]
+        do {
+            let data = try JSONSerialization.data(withJSONObject: tripData)
+            return data
+        } catch {
+            throw RemoteDataSourceError.decodingError(error)
+        }
+        
+    }
 }

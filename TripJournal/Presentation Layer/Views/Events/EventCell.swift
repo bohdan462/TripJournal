@@ -2,11 +2,16 @@ import MapKit
 import SwiftUI
 
 struct EventCell: View {
+    
+//    @ObservedObject var viewModel: EventViewModel
+    
     let event: Event
     let edit: () -> Void
     let mediaUploadHandler: (Data) -> Void
-    let mediaDeletionHandler: (Int) -> Void
+    let mediaDeletionHandler: (Media) -> Void
 
+    
+    
     // MARK: - Body
 
     var body: some View {

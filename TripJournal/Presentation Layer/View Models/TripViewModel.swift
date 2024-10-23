@@ -6,14 +6,18 @@
 //
 
 import Foundation
+import SwiftData
 
+@MainActor
 class TripViewModel: ObservableObject {
     // Published properties
     @Published var trips: [Trip] = []
+    
+    @Published var currentTrip: Trip?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @Published var tripFormMode: TripForm.Mode?
-    
+
     // Dependencies
     private let getTripsUseCase: GetTripsUseCase
     private let getTripUseCase: GetTripUseCase
@@ -21,9 +25,9 @@ class TripViewModel: ObservableObject {
     private let updateTripUseCase: UpdateTripUseCase
     private let deleteTripUseCase: DeleteTripUseCase
     
-    private let createEventUseCase: CreateEventsUseCase
-    private let updateEventUseCase: UpdateEventsUseCase
-    private let deleteEventUseCase: DeleteEventsUseCase
+//    private let createEventUseCase: CreateEventsUseCase
+//    private let updateEventUseCase: UpdateEventsUseCase
+//    private let deleteEventUseCase: DeleteEventsUseCase
     
     // Initializer with Dependency Injection
     init(
@@ -40,47 +44,51 @@ class TripViewModel: ObservableObject {
             self.createTripUseCase = createTripUseCase
             self.updateTripUseCase = updateTripUseCase
             self.deleteTripUseCase = deleteTripUseCase
-            self.createEventUseCase = createEventUseCase
-            self.updateEventUseCase = updateEventUseCase
-            self.deleteEventUseCase = deleteEventUseCase
+//            self.createEventUseCase = createEventUseCase
+//            self.updateEventUseCase = updateEventUseCase
+//            self.deleteEventUseCase = deleteEventUseCase
             
         }
     
     // MARK: - Methods
-    
-    func trip(withId id: Trip.ID) -> Trip? {
-        let trip = trips.first { $0.id == id }
-        trip?.events // Access to trigger lazy loading
-        return trip
-    }
-    
-    @MainActor
+
     func loadTrips() async {
         isLoading = true
+        defer { isLoading = false }
+        
         do {
             // Fetch trips in a background thread
             let fetchedTrips = try await getTripsUseCase.execute()
-            
-            // Ensure UI updates happen on the main thread
+         
             trips = fetchedTrips
-            isLoading = false
+            print("\n TRIP_VIEW_MODEL")
+            trips.forEach({ trip in
+                
+                print("TRIP_ID: \(trip.tripId)")
+                print("TRIP_NAME: \(trip.name)")
+               print("TRIP_EVENTS_CONT: \(trip.events.count)")
+                print("TRIP_isSYNCED: \(trip.isSynced)")
+                print("TRIP_FIRST_EVENT_LOCATION :\(trip.events.first?.location) \n\n")
+               
+                
+            })
+
         } catch {
             errorMessage = error.localizedDescription
-            isLoading = false
+          
         }
     }
     
-    @MainActor
+
     func createTrip(name: String, startDate: Date, endDate: Date) async {
         isLoading = true
+        defer { isLoading = false }
+        
         let tripCreate = TripCreate(name: name, startDate: startDate, endDate: endDate)
         Task {
             do {
-                let newTrip = try await createTripUseCase.execute(tripCreate)
-                await MainActor.run {
-                    self.trips.append(newTrip)
-                    self.isLoading = false
-                }
+                _ = try await createTripUseCase.execute(tripCreate)
+                await loadTrips()
             } catch {
                 await MainActor.run {
                     print("\(error.localizedDescription)")
@@ -91,23 +99,17 @@ class TripViewModel: ObservableObject {
         }
     }
     
-    @MainActor
     func updateTrip(_ trip: Trip) async {
         isLoading = true
+        defer { isLoading = false }
+        
         Task {
             do {
-                let updatedTrip = try await updateTripUseCase.execute(trip)
-                print("Updated Trip: \(updatedTrip)")
-                await MainActor.run {
-                    if let index = self.trips.firstIndex(where: { $0.id == updatedTrip.id }) {
-                        self.trips[index] = updatedTrip
-                    }
-                    self.isLoading = false
-                }
+                try await updateTripUseCase.execute(trip)
+                await loadTrips()
             } catch {
                 await MainActor.run {
                     self.errorMessage = error.localizedDescription
-                    self.isLoading = false
                 }
             }
         }
@@ -115,43 +117,32 @@ class TripViewModel: ObservableObject {
     
     
     
-    @MainActor
-    func getTrip(by tripId: Trip.ID) async -> Trip? {
+
+    func getTrip(by tripId: Trip.ID) async {
         isLoading = true
+        defer { isLoading = false }
         
         do {
-            // Fetch the trip in the background thread
-            let fetchedTrip = try await getTripUseCase.execute(tripId)
-            
-            // Ensure that any UI updates (like modifying trips) happen on the main thread
-            if let index = trips.firstIndex(where: { $0.id == fetchedTrip.id }) {
-                trips[index] = fetchedTrip
-            } else {
-                trips.append(fetchedTrip)
-            }
-            isLoading = false
-            return fetchedTrip
+          let fetchedTrip = try await getTripUseCase.execute(tripId)
+                currentTrip = fetchedTrip
+            print("Current Trip To Show Details About: \(currentTrip!.name)")
         } catch {
             errorMessage = error.localizedDescription
-            isLoading = false
-            return nil
         }
     }
     
     
     func deleteTrip(_ tripId: Trip.ID) {
         isLoading = true
+        defer { isLoading = false }
+        
         Task {
             do {
                 try await deleteTripUseCase.execute(tripId)
-                await MainActor.run {
-                    self.trips.removeAll { $0.id == tripId }
-                    self.isLoading = false
-                }
+                await loadTrips()
             } catch {
                 await MainActor.run {
                     self.errorMessage = error.localizedDescription
-                    self.isLoading = false
                 }
             }
         }
@@ -159,114 +150,17 @@ class TripViewModel: ObservableObject {
     
     func deleteAll() {
         isLoading = true
+        defer { isLoading = false }
+        
         Task {
             do {
                 try await deleteTripUseCase.deleteAll()
-                await MainActor.run {
-                    self.trips.removeAll()
-                    self.isLoading = false
-                }
+                await loadTrips()
             } catch {
                 await MainActor.run {
                     self.errorMessage = error.localizedDescription
-                    self.isLoading = false
                 }
             }
         }
     }
 }
-
-extension TripViewModel {
-    
-    func addEvent(_ event: Event, fromTrip: Trip) async {
-        // Mark isLoading as true on the main thread
-        await MainActor.run {
-            isLoading = true
-        }
-        
-        do {
-            // Execute the use case asynchronously (this can happen off the main thread)
-            try await createEventUseCase.execute(event: event, trip: fromTrip)
-            
-            // Update the trips array on the main thread
-            await MainActor.run {
-                if let tripIndex = trips.firstIndex(where: { $0.id == fromTrip.id }) {
-                    trips[tripIndex].events.append(event)
-                    Task {
-                        await self.updateTrip(trips[tripIndex]) // Call updateTrip to sync
-                    }
-                    
-                }
-                isLoading = false
-            }
-        } catch {
-            // Handle errors on the main thread
-            await MainActor.run {
-                errorMessage = error.localizedDescription
-                isLoading = false
-            }
-        }
-    }
-    
-    func updateEvent(_ event: Event, inTrip: Trip) async {
-        // Mark isLoading as true on the main thread
-        await MainActor.run {
-            isLoading = true
-        }
-        
-        // Check if the trip exists in the array
-        if let tripIndex = trips.firstIndex(where: { $0.id == inTrip.id }) {
-            // Perform the event update
-            await MainActor.run {
-                if let eventIndex = trips[tripIndex].events.firstIndex(where: { $0.id == event.id }) {
-                    
-                    //TODO: - this probably should be updated with server respose Event object, not the passes object
-                    trips[tripIndex].events[eventIndex] = event
-                }
-            }
-            //            // Optionally, persist the changes to the server or local storage
-                        await updateTrip(trips[tripIndex])
-            
-            do {
-                try await updateEventUseCase.execute(event: event, inTrip: trips[tripIndex])
-            } catch {
-                await MainActor.run {
-                    errorMessage = error.localizedDescription
-                    isLoading = false
-                }
-            }
-        }
-        
-        // Ensure that isLoading is turned off on the main thread
-        await MainActor.run {
-            isLoading = false
-        }
-    }
-    
-    func deleteEvent(withId eventId: Event.ID, fromTrip trip: Trip) async {
-        // Mark isLoading as true on the main thread
-        await MainActor.run {
-            isLoading = true
-        }
-        
-        do {
-            // Execute the delete event use case asynchronously
-            try await deleteEventUseCase.execute(eventId: eventId, fromTrip: trip)
-            
-            // Update the trips array on the main thread
-            await MainActor.run {
-                if let tripIndex = trips.firstIndex(where: { $0.id == trip.id }) {
-                    trips[tripIndex].events.removeAll { $0.id == eventId }
-                }
-                isLoading = false
-            }
-        } catch {
-            // Handle errors on the main thread
-            await MainActor.run {
-                errorMessage = error.localizedDescription
-                isLoading = false
-            }
-        }
-    }
-}
-

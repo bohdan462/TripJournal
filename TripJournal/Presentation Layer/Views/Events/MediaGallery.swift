@@ -30,7 +30,7 @@ struct MediaGallery: View {
 
     private func cell(for media: Media) -> some View {
         AsyncImage(
-            url: media.url,
+            url: FileManagerStorage.shared.getFileURL(forKey:"\(String(describing: media.url!))"),
             content: { imageView in
                 imageView
                     .resizable()

@@ -3,6 +3,8 @@ import SwiftData
 
 struct TripList: View {
     
+    let serviceLocator: ServiceLocator
+    
     @Binding var addAction: () -> Void
     @State private var isLoading = false
     @State private var error: Error?
@@ -14,7 +16,10 @@ struct TripList: View {
     
     @EnvironmentObject var viewModel: TripViewModel
     
-    init(addAction: Binding<() -> Void>) {
+    @Query(sort: \Trip.startDate, order: .reverse) var trips: [Trip]
+    
+    init(serviceLocator: ServiceLocator, addAction: Binding<() -> Void>) {
+        self.serviceLocator = serviceLocator
         self._addAction = addAction
     }
     
@@ -34,10 +39,11 @@ struct TripList: View {
                     TripDetails(
                         viewModel: viewModel,
                         tripId: trip.id,
+                        serviceLocator: serviceLocator,
                         addAction: $addAction
                     ) {
                         Task {
-                            viewModel.loadTrips
+//                            viewModel.loadTrips
                         }
                     }
                 }
@@ -45,7 +51,7 @@ struct TripList: View {
                     TripForm(mode: mode) {
                         Task {
                             print("Called to Show tripformmode")
-                            await fetchTrips()
+//                            await fetchTrips()
                         }
                     }
                 }
@@ -67,7 +73,7 @@ struct TripList: View {
                 .loadingOverlay(viewModel.isLoading)
         }
         .task {
-            await fetchTrips()
+//            await fetchTrips()
         }
     }
     
@@ -104,7 +110,7 @@ struct TripList: View {
             actions: {
                 Button("Try Again") {
                     Task {
-                        await fetchTrips()
+//                        await fetchTrips()
                     }
                 }
             }
@@ -125,7 +131,7 @@ struct TripList: View {
     
     private var listView: some View {
         List {
-            ForEach(viewModel.trips) { trip in
+            ForEach(trips) { trip in
                 TripCell(
                     trip: trip,
                     edit: {

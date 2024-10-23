@@ -30,7 +30,7 @@ struct MediaCarousel: View {
         medias: [Media],
         placement: Placement,
         additionHandler: @escaping (Data) -> Void,
-        deletionHandler: @escaping (Int) -> Void
+        deletionHandler: @escaping (Media) -> Void
     ) {
         self.medias = medias
         self.placement = placement
@@ -41,7 +41,7 @@ struct MediaCarousel: View {
     private let medias: [Media]
     private let placement: Placement
     private let additionHandler: (Data) -> Void
-    private let deletionHandler: (Int) -> Void
+    private let deletionHandler: (Media) -> Void
 
     @State private var selected: Media?
     @State private var imageItem: PhotosPickerItem?
@@ -103,7 +103,7 @@ struct MediaCarousel: View {
 
     private func cell(for media: Media) -> some View {
         AsyncImage(
-            url: media.url,
+            url: FileManagerStorage.shared.getFileURL(forKey:"\(String(describing: media.url!))"),
             content: { image in
                 image
                     .resizable()
@@ -120,7 +120,7 @@ struct MediaCarousel: View {
         )
         .contextMenu {
             Button("Delete media", systemImage: "trash", role: .destructive) {
-                deletionHandler(media.mediaId!)
+                deletionHandler(media)
             }
         }
         .frame(height: placement.height)
@@ -146,3 +146,5 @@ struct MediaCarousel: View {
             .containerRelativeFrame(.horizontal, count: 12, span: placement.span, spacing: 0)
     }
 }
+
+

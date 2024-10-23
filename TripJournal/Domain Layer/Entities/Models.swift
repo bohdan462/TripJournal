@@ -46,12 +46,20 @@ final class Trip: Identifiable, Sendable {
     
     convenience init(from response: TripResponse) {
         self.init(
-            tripId: response.id,
+            tripId: response.tripId,
             name: response.name,
-            startDate: response.startDate,
-            endDate: response.endDate,
+            startDate: response.startDate.toDate(),
+            endDate: response.endDate.toDate(),
             isSynced: true
         )
+        
+        let events = [Event]()
+        response.events.forEach { event in
+            let newEvent = Event(from: event, trip: self)
+            self.events.append(newEvent)
+        }
+        self.events = events
+
     }
     
 }
@@ -64,10 +72,12 @@ final class Event: Identifiable, Sendable, Hashable {
     var name: String
     var note: String?
     var date: Date
+    @Relationship(deleteRule: .cascade)
     var location: Location?
     @Relationship(deleteRule: .nullify)
     var trip: Trip? // Reference to the Trip model
     var tripID: Int? // Remote trip ID
+    @Relationship(deleteRule: .cascade)
     var medias: [Media]
     var transitionFromPrevious: String?
     var isSynced: Bool
@@ -103,22 +113,20 @@ final class Event: Identifiable, Sendable, Hashable {
     
     convenience init(from response: EventResponse, trip: Trip?) {
         self.init(
-            eventId: response.id,
+            eventId: response.eventId,
             name: response.name,
             note: response.note,
-            date: response.date,
-            location: response.location != nil ? Location(latitude: response.location!.latitude, longitude: response.location!.longitude) : nil,
-            trip: trip, // Set the trip relationship
+            date: response.date.toDate(),
+            location: response.location != nil ? Location(latitude:response.location!.latitude, longitude: response.location!.longitude, address: response.location?.address) : nil,
+            trip: trip,
             tripID: trip?.tripId,
-            medias: [], // Will be populated later
+            medias: [],
             transitionFromPrevious: response.transitionFromPrevious,
             isSynced: true
         )
-        
         // Map and append Media objects
         for mediaResponse in response.medias {
-            let media = Media(from: mediaResponse)
-            media.event = self
+            let media = Media(from: mediaResponse, event: self)
             self.medias.append(media)
         }
     }
@@ -127,7 +135,7 @@ final class Event: Identifiable, Sendable, Hashable {
 
 /// Represents a location.
 ///
-///  add a method for reverse-geocoding the address (optional but useful for future features like event location display).
+///  add a method for reverse-geocoding the address
 @Model
 final class Location: Sendable {
     var latitude: Double
@@ -153,6 +161,7 @@ final class Media: Identifiable, Sendable {
         var mediaId: Int?
         var caption: String?
         var url: URL?
+    @Relationship(deleteRule: .nullify)
         var event: Event? // Reference to the Event model
         var isSynced: Bool
         var isDeleted: Bool // For offline deletions
@@ -176,15 +185,14 @@ final class Media: Identifiable, Sendable {
         }
     
     /// Convenience initializer to map from `MediaResponse`
-    convenience init(from response: MediaResponse) {
+    convenience init(from response: MediaResponse, event: Event?) {
         self.init(
             mediaId: response.id,
             caption: response.caption,
             url: URL(string: response.url),
-            event: nil
+            event: event,
+            isSynced: true
         )
     }
 }
-
-
 

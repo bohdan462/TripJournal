@@ -24,26 +24,3 @@ enum HTTPHeaders: String {
     case contentType = "Content-Type"
     case authorization = "Authorization"
 }
-
-enum NetworkError: Error {
-    case badUrl
-    case badResponse
-    case failedToDecodeResponse
-    case invalidValue
-    case unauthorized
-    case notFound
-    case noConnection
-}
-
-enum SessionError: Error {
-    case expired
-}
-
-extension SessionError: LocalizedError {
-    var errorDescription: String? {
-        switch self {
-        case .expired:
-            return "Your session has expired. Please log in again."
-        }
-    }
-}

@@ -3,48 +3,68 @@ import MapKit
 
 struct TripCreate: Codable {
     let name: String
-    let startDate: Date
-    let endDate: Date
+    let startDate: String
+    let endDate: String
     
     enum CodingKeys: String, CodingKey {
         case name
         case startDate = "start_date"
         case endDate = "end_date"
+    }
+    
+    init(name: String, startDate: Date, endDate: Date) {
+        self.name = name
+        self.startDate = startDate.toString()
+        self.endDate = endDate.toString()
     }
 }
 
 struct TripUpdate: Codable {
     let name: String
-    let startDate: Date
-    let endDate: Date
+    let startDate: String
+    let endDate: String
     
     enum CodingKeys: String, CodingKey {
         case name
         case startDate = "start_date"
         case endDate = "end_date"
     }
+    
+    init(name: String, startDate: Date, endDate: Date) {
+        self.name = name
+        self.startDate = startDate.toString()
+        self.endDate = endDate.toString()
+    }
 }
 
 struct TripResponse: Codable {
-    let id: Int
+    let tripId: Int
     let name: String
-    let startDate: Date
-    let endDate: Date
+    let startDate: String
+    let endDate: String
     let events: [EventResponse]
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case tripId = "id"
         case name
         case startDate = "start_date"
         case endDate = "end_date"
         case events
+    }
+    
+    init(tripId: Int, name: String, startDate: Date, endDate: Date, events: [EventResponse]) {
+        self.tripId = tripId
+        self.name = name
+        self.startDate = startDate.toString()
+        self.endDate = endDate.toString()
+        self.events = events
     }
 }
 
 struct EventCreate: Codable {
     let tripId: Int
     let name: String
-    let date: Date
+    let date: String
     let note: String?
     let location: LocationResponse?
     let transitionFromPrevious: String?
@@ -58,12 +78,20 @@ struct EventCreate: Codable {
         case transitionFromPrevious = "transition_from_previous"
     }
     
-    
+    init(tripId: Int, name: String, date: Date, note: String?, location: LocationResponse?, transitionFromPrevious: String?) {
+        self.tripId = tripId
+        self.name = name
+        self.date = date.toString()
+        self.note = note
+        self.location = location
+        self.transitionFromPrevious = transitionFromPrevious
+    }
+
 }
 
 struct EventUpdate: Codable {
     let name: String
-    let date: Date
+    let date: String
     let note: String?
     let location: LocationResponse?
     let transitionFromPrevious: String?
@@ -75,19 +103,27 @@ struct EventUpdate: Codable {
         case location
         case transitionFromPrevious = "transition_from_previous"
     }
+    
+    init(name: String, date: Date, note: String?, location: LocationResponse?, transitionFromPrevious: String?) {
+        self.name = name
+        self.date = date.toString()
+        self.note = note
+        self.location = location
+        self.transitionFromPrevious = transitionFromPrevious
+    }
 }
 
 struct EventResponse: Codable {
-    let id: Int
+    let eventId: Int
     let name: String
-    let date: Date
+    let date: String
     let note: String?
     let location: LocationResponse?
     let transitionFromPrevious: String?
     let medias: [MediaResponse]
     
     enum CodingKeys: String, CodingKey {
-        case id
+        case eventId = "id"
         case name
         case date
         case note
@@ -95,17 +131,27 @@ struct EventResponse: Codable {
         case transitionFromPrevious = "transition_from_previous"
         case medias
     }
+    
+    init(eventId: Int, name: String, date: Date, note: String?, location: LocationResponse?, transitionFromPrevious: String?, medias: [MediaResponse]) {
+        self.eventId = eventId
+        self.name = name
+        self.date = date.toString()
+        self.note = note
+        self.location = location
+        self.transitionFromPrevious = transitionFromPrevious
+        self.medias = medias
+    }
 }
 
 struct MediaCreate: Codable {
     let caption: String
     let base64Data: String
-    let eventID: Int
+    let eventId: Int
     
     enum CodingKeys: String, CodingKey {
         case caption
         case base64Data = "base64_data"
-        case eventID = "event_id"
+        case eventId = "event_id"
     }
 }
 

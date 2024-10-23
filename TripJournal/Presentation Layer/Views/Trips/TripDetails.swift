@@ -10,20 +10,31 @@ struct TripDetails: View {
     @State private var isDeleteConfirmationPresented = false
     @State private var isLoading = false
     @State private var error: Error?
-
+    let serviceLocator: ServiceLocator
     @ObservedObject var viewModel: TripViewModel
+    
+    @StateObject private var mediaViewModel: MediaViewModel
+    @StateObject private var eventViewModel: EventViewModel
+    
+    
+    
     @Environment(\.dismiss) private var dismiss
 
     init(
         viewModel: TripViewModel,
         tripId: Trip.ID,
+        serviceLocator: ServiceLocator,
         addAction: Binding<() -> Void>,
         deletionHandler: @escaping () -> Void
     ) {
         self.viewModel = viewModel
         self.tripId = tripId
+        self.serviceLocator = serviceLocator
         self._addAction = addAction
         self.deletionHandler = deletionHandler
+        
+        _eventViewModel = StateObject(wrappedValue: serviceLocator.getEventViewModel())
+        _mediaViewModel = StateObject(wrappedValue: serviceLocator.getMediaViewModel())
     }
 
     var body: some View {
@@ -34,11 +45,11 @@ struct TripDetails: View {
                     await viewModel.getTrip(by: tripId)
                 }
             }
-            .navigationTitle(viewModel.trip(withId: tripId)?.name ?? "Trip")
+            .navigationTitle(viewModel.currentTrip?.name ?? "Trip")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(content: toolbar)
             .sheet(item: $eventFormMode) { mode in
-                EventForm(tripId: tripId, mode: mode, viewModel: viewModel)
+                EventForm(mode: mode, viewModel: eventViewModel, trip: viewModel.currentTrip!)
             }
             .confirmationDialog("Delete Trip?", isPresented: $isDeleteConfirmationPresented) {
                 Button("Delete Trip", role: .destructive) {
@@ -62,7 +73,8 @@ struct TripDetails: View {
 
     @ViewBuilder
     private var contentView: some View {
-        if let trip = viewModel.trip(withId: tripId) {
+        if let trip = viewModel.currentTrip {
+            
             if trip.events.isEmpty {
                 emptyView
             } else {
@@ -79,8 +91,18 @@ struct TripDetails: View {
                 EventCell(
                     event: event,
                     edit: { eventFormMode = .edit(event) },
-                    mediaUploadHandler: { _ in },
-                    mediaDeletionHandler: { _ in }
+                    mediaUploadHandler: { data in
+                        Task {
+                            mediaViewModel.event = event
+                            await addMedia(withData: data, caption: "")
+                        }
+                    },
+                    mediaDeletionHandler: { media in
+                        Task {
+                            mediaViewModel.event = event
+                            await deleteMedia(media)
+                        }
+                    }
                 )
             }
         }
@@ -106,10 +128,19 @@ struct TripDetails: View {
 
     private func deleteTrip() async {
         isLoading = true
-        await viewModel.deleteTrip(tripId)
+         viewModel.deleteTrip(tripId)
         await MainActor.run {
             isLoading = false
             dismiss()
         }
+    }
+    
+    private func addMedia(withData data: Data, caption: String) async {
+       
+        await mediaViewModel.createMedia(with: data, caption: caption)
+    }
+    
+    private func deleteMedia(_ media: Media) async {
+        await mediaViewModel.deleteMedia(media)
     }
 }

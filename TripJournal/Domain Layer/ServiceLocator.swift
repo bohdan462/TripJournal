@@ -1,8 +1,7 @@
+// ServiceLocator.swift
+// TripJournal
 //
-//  ServiceLocator.swift
-//  TripJournal
-//
-//  Created by Bohdan Tkachenko on 9/25/24.
+// Created by Bohdan Tkachenko on 9/25/24.
 //
 
 import Foundation
@@ -13,91 +12,44 @@ class ServiceLocator {
     // Global dependencies
     private let context: ModelContext
     
+    // Services
     private lazy var networkClient: NetworkClient = {
         return NetworkClient()
     }()
     
     private lazy var tokenManager: TokenManager = {
-           print("Initialized TokenManager")
-           return TokenManager(storage: KeychainHelper.shared, tokenStorage: TokenStorage(), serviceLocator: self)
-       }()
-    
-//    private lazy var journalServiceFacade: JournalServiceFacade = {
-//        print("Initialized JournalServiceFacade")
-//        return JournalServiceFacade(serviceLocator: self, context: context)
-//    }()
+        print("Initialized TokenManager")
+        return TokenManager(storage: KeychainHelper.shared, tokenStorage: TokenStorage(), serviceLocator: self)
+    }()
     
     private lazy var cacheService: CacheService = {
-         print("Initialized CacheService")
-         return CacheServiceManager()
-     }()
+        print("Initialized CacheService")
+        return CacheServiceManager()
+    }()
     
     // Authentication Service
-       private lazy var authService: AuthenticationService = {
-           print("Initialized AuthenticationService")
-           return AuthenticationService(tokenManager: tokenManager)
-       }()
+    private lazy var authService: AuthenticationService = {
+        print("Initialized AuthenticationService")
+        return AuthenticationService(tokenManager: tokenManager)
+    }()
     
-    // JournalServiceLive
-//    private lazy var journalServiceLive: JournalServiceLive = {
-//        print("Initialized JournalServiceLive")
-//        return JournalServiceLive(tokenManager: tokenManager, networkClient: networkClient)
-//    }()
-    
-    init(context: ModelContext) {
-        self.context = context
-    }
-    
-    // Provide the ModelContext for SwiftData
-    func getModelContext() -> ModelContext {
-        return context
-    }
-    
-    // Provide the NetworkMonitor
-    func getNetworkMonitor() -> NetworkMonitor {
-        return NetworkMonitor.shared
-    }
-    
-    func getTokenManager() -> TokenManager {
-        return tokenManager // Return the cached instance
-    }
-    
-    func getNetworkClient() -> NetworkClient {
-        return networkClient // Return the cached instance
-    }
-    
-    func getCacheService() -> CacheService {
-        return cacheService
-    }
-    
-    func getAuthService() -> AuthenticationService {
-        return authService as! AuthenticationService
-    }
-    
-//    func getJournalServiceLive() -> JournalServiceLive {
-//        return journalServiceLive
-//    }
-    
+    // Authentication Manager
     func makeJournalAuthManager() -> JournalAuthManager {
         return JournalAuthManager(authService: authService)
     }
     
-//    func getJournalServiceFacade() -> JournalServiceFacade {
-//        return journalServiceFacade // Return the cached instance
-//    }
+    // MARK: - Data Sources and Repositories
     
-    // MARK: - Trip
-    
-    // Data Sources (Remote and Local)
+    // Trip Data Sources
     func getTripRemoteDataSource() -> TripRemoteDataSource {
         return TripRemoteDataSourceImpl(networking: networkClient, tokenManager: tokenManager)
     }
     
     func getTripLocalDataSource() -> TripLocalDataSource {
-        return TripLocalDataSourceImpl(context: getModelContext())
+        return TripLocalDataSourceImpl(context: context)
     }
     
-    // Repositories
+    // Trip Repository
     func getTripRepository() -> TripRepository {
         return TripRepositoryImpl(
             remoteDataSource: getTripRemoteDataSource(),
@@ -105,85 +57,88 @@ class ServiceLocator {
         )
     }
     
-    func getGetTripsUseCase() -> GetTripsUseCase {
-        return GetTripsUseCaseImpl(tripRepository: getTripRepository())
+    // Event Data Sources
+    func getEventRemoteDataSource() -> EventRemoteDataSource {
+        return EventRemoteDataSourceImpl(networking: networkClient, tokenManager: tokenManager)
     }
     
-    func getGetTripUseCase() -> GetTripUseCase {
-        return GetTripUseCaseImpl(tripRepository: getTripRepository())
+    func getEventLocalDataSource() -> EventLocalDataSource {
+        return EventLocalDataSourceImpl(context: context)
     }
     
-    func getCreateTripUseCase() -> CreateTripUseCase {
-        return CreateTripUseCaseImpl(tripRepository: getTripRepository())
+    // Event Repository
+    private lazy var eventRepository: EventRepository = {
+        return EventRepositoryImpl(remoteDataSource: getEventRemoteDataSource(), localDataSource: getEventLocalDataSource())
+    }()
+    
+    // Media Data Sources
+    func getMediaRemoteDataSource() -> MediaRemoteDataSource {
+        return MediaRemoteDataSourceImpl(networking: networkClient, tokenManager: tokenManager)
     }
     
-    func getUpdateTripUseCase() -> UpdateTripUseCase {
-        return UpdateTripUseCaseImpl(tripRepository: getTripRepository())
+    func getMediaLocalDataSource() -> MediaLocalDataSource {
+        return MediaLocalDataSourceImpl(context: context, storage: FileManagerStorage.shared)
     }
     
-    func getDeleteTripUseCase() -> DeleteTripUseCase {
-        return DeleteTripUseCaseImpl(tripRepository: getTripRepository())
+    // Media Repository
+    private lazy var mediaRepository: MediaRepository = {
+        return MediaRepositoryImpl(remoteDataSource: getMediaRemoteDataSource(), localDataSource: getMediaLocalDataSource())
+    }()
+    
+    // Use Case Factory
+    private lazy var useCaseFactory: UseCaseFactory = {
+        UseCaseFactory(
+            tripRepository: getTripRepository(),
+            eventRepository: eventRepository,
+            mediaRepository: mediaRepository
+        )
+    }()
+    
+    init(context: ModelContext) {
+        self.context = context
     }
     
-    //MARK: - Provide the ViewModel with Use Cases
+    // MARK: - Authentication and Network Services
+    
+    func getAuthService() -> AuthenticationService {
+        return authService
+    }
+    
+    func getNetworkMonitor() -> NetworkMonitor {
+        return NetworkMonitor.shared
+    }
+    
+    // MARK: - View Models
+    
+    @MainActor
     func getTripViewModel() -> TripViewModel {
         return TripViewModel(
-            getTripsUseCase: getGetTripsUseCase(),
-            getTripUseCase: getGetTripUseCase(),
-            createTripUseCase: getCreateTripUseCase(),
-            updateTripUseCase: getUpdateTripUseCase(),
-            deleteTripUseCase: getDeleteTripUseCase(),
-            createEventUseCase: createEventUseCase,
-            updateEventUseCase: updateEventUseCase,
-            deleteEventUseCase: deleteEventUseCase
+            getTripsUseCase: useCaseFactory.makeGetTripsUseCase(),
+            getTripUseCase: useCaseFactory.makeGetTripUseCase(),
+            createTripUseCase: useCaseFactory.makeCreateTripUseCase(),
+            updateTripUseCase: useCaseFactory.makeUpdateTripUseCase(),
+            deleteTripUseCase: useCaseFactory.makeDeleteTripUseCase(),
+            createEventUseCase: useCaseFactory.makeCreateEventUseCase(),
+            updateEventUseCase: useCaseFactory.makeUpdateEventUseCase(),
+            deleteEventUseCase: useCaseFactory.makeDeleteEventUseCase()
         )
     }
-    // MARK: - Event
-        private lazy var eventRepository: EventRepository = {
-            return EventRepositoryImpl(
-                remoteDataSource: eventRemoteDataSource,
-                localDataSource: eventLocalDataSource
-            )
-        }()
-        
-        // MARK: - Data Sources
-        private lazy var eventRemoteDataSource: EventRemoteDataSource = {
-            return EventRemoteDataSourceImpl(
-                networking: networkClient,
-                tokenManager: tokenManager
-            )
-        }()
-        
-        private lazy var eventLocalDataSource: EventLocalDataSource = {
-            return EventLocalDataSourceImpl(context: context)
-        }()
-        
-        // MARK: - Use Cases
-        private lazy var createEventUseCase: CreateEventsUseCase = {
-            return CreateEventsUseCaseImpl(tripRepository: getTripRepository(), eventRepository: eventRepository)
-        }()
-        
-        private lazy var getEventUseCase: GetEventsUseCase = {
-            return GetEventsUseCaseImpl(eventRepository: eventRepository)
-        }()
-        
-        private lazy var updateEventUseCase: UpdateEventsUseCase = {
-            return UpdateEventsUseCaseImpl(tripRepository: getTripRepository(), eventRepository: eventRepository)
-        }()
-        
-        private lazy var deleteEventUseCase: DeleteEventsUseCase = {
-            return DeleteEventsUseCaseImpl(tripRepository: getTripRepository())
-        }()
     
-    //MARK: - View Model with Use Cases
-   func getEventViewModel(event: Event? = nil) -> EventViewModel {
+    @MainActor
+    func getEventViewModel() -> EventViewModel {
         return EventViewModel(
-            event: event,
-            createEventUseCase: createEventUseCase,
-            getEventUseCase: getEventUseCase,
-            updateEventUseCase: updateEventUseCase,
-            deleteEventUseCase: deleteEventUseCase
+            createEventUseCase: useCaseFactory.makeCreateEventUseCase(),
+            getEventUseCase: useCaseFactory.makeGetEventUseCase(),
+            updateEventUseCase: useCaseFactory.makeUpdateEventUseCase(),
+            deleteEventUseCase: useCaseFactory.makeDeleteEventUseCase()
         )
     }
-
+    
+    @MainActor
+    func getMediaViewModel() -> MediaViewModel {
+        return MediaViewModel(
+            createMediaUseCase: useCaseFactory.makeCreateMediaUseCase(),
+            deleteMediaUseCase: useCaseFactory.makeDeleteMediaUseCase()
+        )
+    }
 }

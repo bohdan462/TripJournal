@@ -37,7 +37,10 @@ struct LocationSearchView: View {
     }
 
     private func row(for result: MKLocalSearchCompletion) -> some View {
-        Button(action: { handleSelection(for: result) }) {
+        Button(action: {
+            handleSelection(for: result)
+            
+        }) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(result.title)
                     .font(.headline)

@@ -1,11 +1,6 @@
 import Foundation
 import Combine
 
-
-enum AuthError: Error {
-    case noCredentials
-}
-
 enum AuthRequestBodyType: String {
     case username
     case password
